@@ -1,0 +1,6 @@
+{
+  "12345": ["Attendant task", "ATTENDANT", 800.0],
+  "12346": ["Senior Attendant task", "ATTENDANT", 1200.0],
+  "12347": ["Cooker", "COOKER", 1400.0],
+  "12348": ["Chief", "COOKER", 1800.0]
+}
