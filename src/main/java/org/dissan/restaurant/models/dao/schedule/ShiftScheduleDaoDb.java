@@ -1,4 +1,4 @@
-package org.dissan.restaurant.models.dao.shedule;
+package org.dissan.restaurant.models.dao.schedule;
 
 import org.json.JSONArray;
 

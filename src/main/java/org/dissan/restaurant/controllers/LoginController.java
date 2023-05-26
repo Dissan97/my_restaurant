@@ -1,7 +1,7 @@
 package org.dissan.restaurant.controllers;
 
 import org.dissan.restaurant.beans.BadCommanEntryException;
-import org.dissan.restaurant.beans.EnumCommand;
+import org.dissan.restaurant.beans.UserBeanCommand;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.controllers.exceptions.UserAlreadyExistException;
 import org.dissan.restaurant.controllers.exceptions.UserCredentialException;
@@ -21,8 +21,8 @@ public class LoginController {
         this.setDao(new UserDao());
     }
     public void singIn() throws UserCredentialException, BadCommanEntryException {
-        String username = this.userBean.getEntry(EnumCommand.USERNAME);
-        String password = this.userBean.getEntry(EnumCommand.PASSWORD);
+        String username = this.userBean.getEntry(UserBeanCommand.USERNAME);
+        String password = this.userBean.getEntry(UserBeanCommand.PASSWORD);
         checkUserAndPassword(username, password);
         this.userBean.setUser(this.user);
     }
@@ -43,13 +43,13 @@ public class LoginController {
     }
 
     public void singUp() throws BadCommanEntryException, UserAlreadyExistException, IOException {
-        String username = this.userBean.getEntry(EnumCommand.USERNAME);
-        String password = HashUtil.hashString(this.userBean.getEntry(EnumCommand.PASSWORD));
-        String name = this.userBean.getEntry(EnumCommand.NAME);
-        String surname = this.userBean.getEntry(EnumCommand.SURNAME);
-        String cityOfBirth = this.userBean.getEntry(EnumCommand.CITY_OF_BIRH);
-        String dateOfBirth = this.userBean.getEntry(EnumCommand.DATE);
-        String role = this.userBean.getEntry(EnumCommand.ROLE);
+        String username = this.userBean.getEntry(UserBeanCommand.USERNAME);
+        String password = HashUtil.hashString(this.userBean.getEntry(UserBeanCommand.PASSWORD));
+        String name = this.userBean.getEntry(UserBeanCommand.NAME);
+        String surname = this.userBean.getEntry(UserBeanCommand.SURNAME);
+        String cityOfBirth = this.userBean.getEntry(UserBeanCommand.CITY_OF_BIRH);
+        String dateOfBirth = this.userBean.getEntry(UserBeanCommand.DATE);
+        String role = this.userBean.getEntry(UserBeanCommand.ROLE);
         try{
             checkUser(username);
             throw new UserAlreadyExistException(username + " already taken");

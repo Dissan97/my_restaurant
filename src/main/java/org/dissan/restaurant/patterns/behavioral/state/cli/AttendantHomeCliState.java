@@ -3,8 +3,9 @@ package org.dissan.restaurant.patterns.behavioral.state.cli;
 import org.dissan.restaurant.beans.UserBean;
 
 public class AttendantHomeCliState extends AccountHomeCliState {
-    public AttendantHomeCliState(UserBean bean) {
+    public AttendantHomeCliState(UserBean bean, CliState currentState) {
         super(AttendantHomeCliState.class.getSimpleName(), bean);
+        previousState = currentState;
     }
 
     @Override
@@ -25,7 +26,6 @@ public class AttendantHomeCliState extends AccountHomeCliState {
                 break;
             case "help":
                 showHelp();
-                updateUi();
                 break;
             case "exit":
                 break;

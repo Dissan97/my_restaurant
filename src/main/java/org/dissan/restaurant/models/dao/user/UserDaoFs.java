@@ -16,11 +16,12 @@ import java.util.logging.Logger;
 public class UserDaoFs {
 
     private UserDaoFs() {}
-    private static final Map<String, JSONArray> LOCAL_CACHE = new HashMap<>();
+    private static final Map<String, JSONObject> LOCAL_CACHE = new HashMap<>();
     private static final String USERS = "users.json";
+    private static final String USERNAME = "username";
 
     @Contract(pure = true)
-    public static @Nullable JSONArray getUserByUserName(String username)  {
+    public static @Nullable JSONObject getUserByUserName(String username)  {
         if (!LOCAL_CACHE.containsKey(username)){
             try {
                 UserDaoFs.loadUsers();
@@ -53,11 +54,12 @@ public class UserDaoFs {
         try (InputStream reader = Objects.requireNonNull(UserDaoFs.class.getResourceAsStream(UserDaoFs.USERS))) {
             JSONTokener jsonTokener = new JSONTokener(reader);
             userArray = new JSONArray(jsonTokener);
-            JSONObject object = userArray.getJSONObject(0);
-            for (String k:
-                    object.keySet()) {
-                UserDaoFs.LOCAL_CACHE.putIfAbsent(k, object.getJSONArray(k));
+            for (int i = 0; i < userArray.length(); i++) {
+                JSONObject object = userArray.getJSONObject(i);
+                String usr = object.getString(USERNAME);
+                LOCAL_CACHE.put(usr, object);
             }
+
         }catch (NullPointerException e){
             UserDaoFs.initFile();
             loadUsers();
@@ -68,24 +70,26 @@ public class UserDaoFs {
 
     public static void putUser(@NotNull JSONObject object) throws IOException, UserAlreadyExistException {
 
-        String usr = object.keys().next();
+        String usr = object.getString(USERNAME);
         if (LOCAL_CACHE.containsKey(usr)){
             throw new UserAlreadyExistException(usr + " already exist");
         }else{
             loadUsers();
         }
 
-        BufferedWriter writer = new BufferedWriter(
+        try(BufferedWriter writer = new BufferedWriter(
                 new FileWriter(Objects.requireNonNull(UserDaoFs.class.getResource(UserDaoFs.USERS)).getPath())
-        );
-        JSONArray array = new JSONArray();
-        for (String k:
-             UserDaoFs.LOCAL_CACHE.keySet()) {
-            array.put(UserDaoFs.LOCAL_CACHE.get(k));
+        )) {
+            JSONArray array = new JSONArray();
+            for (Map.Entry<String, JSONObject> entry :
+                    LOCAL_CACHE.entrySet()) {
+                array.put(entry.getValue());
+            }
+            array.write(writer);
+        }catch (IOException e){
+            throw new IOException();
         }
-        array.write(writer);
-        writer.close();
-        UserDaoFs.LOCAL_CACHE.put(usr, array);
+        UserDaoFs.LOCAL_CACHE.put(usr, object);
     }
 
     public static @Nullable JSONArray pullUsers() {
@@ -97,11 +101,9 @@ public class UserDaoFs {
             }
         }
         JSONArray array = new JSONArray();
-        for (Map.Entry<String, JSONArray> entry:
+        for (Map.Entry<String, JSONObject> entry:
                 LOCAL_CACHE.entrySet()) {
-            JSONObject object = new JSONObject();
-            object.put(entry.getKey(), entry.getValue());
-            array.put(object);
+            array.put(entry.getValue());
         }
         return array;
     }

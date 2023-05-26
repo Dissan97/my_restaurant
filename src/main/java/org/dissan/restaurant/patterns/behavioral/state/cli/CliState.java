@@ -142,6 +142,7 @@ public abstract class CliState {
                 builder.append(k).append(": ").append(command).append("\n");
         }
         out("commands:\n" + builder);
+        updateUi();
     }
 
 

@@ -14,4 +14,5 @@ public abstract class Employee extends AbstractModelRole {
     public void setEmployeeCode(String employeeCode) {
         this.employeeCode = employeeCode;
     }
+
 }

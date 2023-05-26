@@ -1,5 +1,7 @@
 package org.dissan.restaurant.controllers;
 
+import org.dissan.restaurant.beans.BeanUtil;
+import org.dissan.restaurant.beans.ShiftBeanCommand;
 import org.dissan.restaurant.controllers.api.ShiftManagerEmployeeApi;
 import org.dissan.restaurant.beans.ShiftScheduleBean;
 import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
@@ -7,9 +9,9 @@ import org.dissan.restaurant.controllers.exceptions.ShiftDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
 import org.dissan.restaurant.models.*;
-import org.dissan.restaurant.models.dao.shedule.ShiftScheduleDao;
+import org.dissan.restaurant.models.dao.schedule.ShiftScheduleDao;
 import org.dissan.restaurant.models.dao.shift.ShiftDao;
-import org.dissan.restaurant.models.dao.user.UserDao;
+import org.dissan.restaurant.models.dao.user.EmployeeDao;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,71 +24,63 @@ import java.util.List;
 public class ShiftManager implements ShiftManagerEmployeeApi {
 
     private final ShiftScheduleBean bean;
-    private final ShiftSchedule shiftSchedule;
     private final ShiftScheduleDao shiftScheduleDao;
 
     private List<Shift> shiftList = new ArrayList<>();
-    private List<AbstractUser> employeeList = new ArrayList<>();
+    private List<Employee> employeeList = new ArrayList<>();
 
     public ShiftManager() {
-
         //Preparing the stuff
-        Shift shift = new Shift();
-        AbstractUser user = new ConcreteUser();
-        this.shiftSchedule = new ShiftSchedule(shift, user);
-        this.bean = new ShiftScheduleBean(this.shiftSchedule);
+        this.bean = new ShiftScheduleBean();
         this.shiftScheduleDao = new ShiftScheduleDao();
-        fillEmployees();
-        fillShifts();
+        pullShifts();
+        pullEmployees();
 
     }
 
 
-    private void fillEmployees() {
+    private void pullShifts() {
         ShiftDao dao = new ShiftDao();
         this.shiftList = dao.getShiftList();
+        this.bean.setShiftList(this.shiftList);
     }
-    private void fillShifts() {
-        UserDao dao = new UserDao();
-        this.employeeList = dao.pullUsers();
-        this.employeeList.removeIf(usr -> usr.getRole() != UserRole.ATTENDANT || usr.getRole() != UserRole.COOKER);
+    private void pullEmployees() {
+        this.employeeList = EmployeeDao.pullEmployees();
     }
 
     /**
      *
-     * @param sCode shift code used to check shift
-     * @param eCode employee code used to check employee
-     * @param dateTime dateTime is passed from user to create new shiftSchedule
      * @throws EmployeeDaoException When an employee does not exist
      * @throws ShiftDaoException When a shift does not exist
      * @throws ShiftDateException When is passed a bad date for the context
      * @throws ShiftScheduleDaoException when is passed a bad schedule
      */
-    public void assignShift(String sCode, String eCode, String dateTime) throws EmployeeDaoException, ShiftDaoException, ShiftDateException, ShiftScheduleDaoException {
-        controlEmployee(eCode);
-        controlShift(sCode);
-        this.shiftSchedule.setDateTime(dateTime);
-
+    public void assignShift() throws EmployeeDaoException, ShiftDaoException, ShiftDateException, ShiftScheduleDaoException {
+        String sCode = this.bean.getRelativeEntry(ShiftBeanCommand.SHIFT_CODE);
+        String eCode = this.bean.getRelativeEntry(ShiftBeanCommand.EMPLOYEE_CODE);
+        String dateTime = this.bean.getRelativeEntry(ShiftBeanCommand.DATE_TIME);
+        Employee emp = controlEmployee(eCode);
+        Shift sft = controlShift(sCode);
+        ShiftSchedule shiftSchedule = new ShiftSchedule(sft, emp, dateTime);
         ShiftScheduleDao dao = new ShiftScheduleDao();
         try {
             ShiftSchedule vShiftSchedule = dao.getShiftByKey(sCode, eCode, dateTime);
-            String key = this.shiftSchedule.toString();
+            String key = shiftSchedule.toString();
             String keyToVerify = vShiftSchedule.toString();
             if (key.equals(keyToVerify)){
-                throw new ShiftScheduleDaoException();
+                throw new ShiftScheduleDaoException("shift already exist");
             }
         }catch (NullPointerException ignored){
             //This block is ignored
-        }finally {
-            dao.pushShiftSchedule(this.shiftSchedule);
         }
+        dao.pushShiftSchedule(shiftSchedule);
     }
 
     public void requestUpdate(String sCode, String eCode, String dateTime) throws EmployeeDaoException, ShiftDaoException, ShiftScheduleDaoException, ShiftDateException {
         controlEmployee(eCode);
         controlShift(sCode);
 	    ShiftSchedule schedule = this.getRelativeShiftSchedule(sCode, eCode, dateTime);
-	    schedule.setDateTime(dateTime);
+	    schedule.setShiftDate(dateTime);
 	    shiftScheduleDao.update(schedule);
     }
 
@@ -112,26 +106,26 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
         ShiftSchedule schedule = null;
         schedule = this.shiftScheduleDao.getShiftByKey(sCode, eCode, dateTime);
         if (schedule == null){
-            throw new ShiftScheduleDaoException();
+            throw new ShiftScheduleDaoException("shift already exist");
         }
         return schedule;
     }
 
-    private void controlShift(String sCode) throws ShiftDaoException {
+    private @NotNull Shift controlShift(String sCode) throws ShiftDaoException {
         for (Shift sft:
              this.shiftList) {
             if (sCode.equals(sft.getCode())){
-                return;
+                return sft;
             }
         }
         throw new ShiftDaoException(sCode);
     }
 
-    private void controlEmployee(String eCode) throws EmployeeDaoException {
-        for (AbstractUser usr:
+    private @NotNull Employee controlEmployee(String eCode) throws EmployeeDaoException {
+        for (Employee emp:
              this.employeeList) {
-            if (usr.getUsername().equals(eCode)){
-                return;
+            if (emp.getEmployeeCode().equals(eCode)){
+                return emp;
             }
         }
         throw new EmployeeDaoException(eCode);
@@ -156,7 +150,7 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
 
         for (ShiftSchedule s:
              schedules) {
-            if (!ModelUtil.goodDate(s.getDateTime())){
+            if (BeanUtil.goodDate(s.getShiftDate(), true) == null){
                 return false;
             }
         }

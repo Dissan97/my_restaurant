@@ -52,4 +52,15 @@ public class ShiftDao {
         return shiftList;
 
     }
+
+    public Shift getShiftByCode(String shiftCode) {
+        List<Shift> shiftList = this.getShiftList();
+        for (Shift s:
+             shiftList) {
+            if (s.getCode().equals(shiftCode)){
+                return s;
+            }
+        }
+        return null;
+    }
 }

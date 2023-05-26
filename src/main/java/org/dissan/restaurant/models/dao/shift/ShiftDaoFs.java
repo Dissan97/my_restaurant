@@ -1,5 +1,6 @@
 package org.dissan.restaurant.models.dao.shift;
 
+import org.dissan.restaurant.models.Shift;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.json.JSONTokener;

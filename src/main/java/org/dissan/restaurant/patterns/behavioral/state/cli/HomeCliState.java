@@ -1,6 +1,12 @@
 package org.dissan.restaurant.patterns.behavioral.state.cli;
 
+import org.dissan.restaurant.beans.TableBean;
 import org.dissan.restaurant.cli.utils.OutStream;
+import org.dissan.restaurant.controllers.OrderController;
+import org.dissan.restaurant.models.Attendant;
+import org.dissan.restaurant.models.ConcreteUser;
+import org.dissan.restaurant.models.Employee;
+import org.dissan.restaurant.models.Table;
 import org.dissan.restaurant.patterns.behavioral.state.cli.exceptions.CliUiException;
 import org.dissan.restaurant.patterns.creational.factory.StateFactory;
 
@@ -16,8 +22,12 @@ public class HomeCliState extends CliState{
         }
         CliState state;
         switch (cmd){
+            case "order":
+            case "1":
+                selectTable();
+                break;
             case "login":
-            case"1":
+            case"2":
                 try {
                     state = StateFactory.getInstance(CliStateEnum.LOGIN, this);
                 } catch (CliUiException e) {
@@ -28,18 +38,21 @@ public class HomeCliState extends CliState{
                 this.changeState(state);
                 break;
             case "help":
-            case"2":
+            case"3":
                 super.showHelp();
-                this.updateUi();
                 break;
             case "exit":
-            case"3":
+            case"4":
                 super.exitProgram();
                 break;
             default:
                 OutStream.println("SOME PROBLEM OCCURRED");
                 updateUi();
         }
+    }
+
+    private void selectTable() {
+
     }
 
 }

@@ -1,0 +1,29 @@
+[
+  {
+    "username": "attendant",
+    "password": "993514d22636f383c5e511fbad6a9da0d3a8745553bebe8fa6e3f7269238da96",
+    "name": "aName",
+    "surname": "aSurname",
+    "cityOfBirth": "aCity",
+    "dateOfBirth": "1997-10-09",
+    "role": "ATTENDANT"
+  },
+  {
+    "username": "cooker",
+    "password": "993514d22636f383c5e511fbad6a9da0d3a8745553bebe8fa6e3f7269238da96",
+    "name": "cName",
+    "surname": "cSurname",
+    "cityOfBirth": "cCity",
+    "dateOfBirth": "1997-10-09",
+    "role": "COOKER"
+  },
+  {
+    "username": "manager",
+    "password": "993514d22636f383c5e511fbad6a9da0d3a8745553bebe8fa6e3f7269238da96",
+    "name": "mName",
+    "surname": "mSurname",
+    "cityOfBirth": "mCity",
+    "dateOfBirth": "1997-10-09",
+    "role": "MANAGER"
+  }
+]

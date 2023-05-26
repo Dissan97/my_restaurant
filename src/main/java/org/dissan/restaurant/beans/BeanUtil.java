@@ -1,0 +1,114 @@
+package org.dissan.restaurant.beans;
+import org.jetbrains.annotations.Nullable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class BeanUtil {
+
+    private static final String DAY_FORMAT = "dd-MM-yyyy";
+    private static final String TIME_FORMAT = "::HH:mm";
+
+    private BeanUtil(){}
+
+    public static void handleCommon(String entry) throws BadCommanEntryException {
+        if (entry == null){
+            throw new BadCommanEntryException("Entry cannot be null");
+        }
+
+        if (entry.isEmpty()){
+            throw new BadCommanEntryException("Entry cannot be empty");
+        }
+    }
+
+
+    public static void handleUserName(String entry) throws BadCommanEntryException {
+        BeanUtil.handleCommon(entry);
+        if (entry.length() < 6){
+            throw new BadCommanEntryException("this field must contains at least 6 letters");
+        }
+    }
+
+    public static void handlePassword(String entry) throws BadCommanEntryException {
+        BeanUtil.handleUserName(entry);
+        final String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!.?_]).*$";
+
+        Pattern regex = Pattern.compile(pattern);
+        Matcher matcher = regex.matcher(entry);
+
+        if (!matcher.matches()) {
+            throw new BadCommanEntryException("\nPassword must contains upper letter and has num and special character example:" +
+                    "\nThis.isG00d - thisIsNot");
+        }
+    }
+
+    public static @Nullable String goodDate(String dateTime, boolean task) {
+        Date date;
+        String ret;
+        try {
+            date = getDate(dateTime, task);
+            SimpleDateFormat format = new SimpleDateFormat(DAY_FORMAT + TIME_FORMAT);
+            ret = format.format(date);
+        } catch (ParseException e) {
+            //This is thrown when is passed a bad date format
+            return null;
+        }
+
+        if (!task){
+            return ret;
+        }
+        Calendar calendar = Calendar.getInstance();
+        Date controlDate = calendar.getTime();
+        //this will be thrown when is passed a date before today
+        boolean control = date.before(controlDate);
+        calendar.add(Calendar.WEEK_OF_YEAR, 1);
+        controlDate = calendar.getTime();
+        //this will be thrown when is passed a day after a week
+        control &= date.after(controlDate);
+        if (control){
+            return null;
+        }
+        return ret;
+    }
+
+    private static Date getDate(String dateTime, boolean task) throws ParseException{
+        String date = DAY_FORMAT;
+        String time = "";
+        if (task){
+            time = TIME_FORMAT;
+        }
+        String toParse = date + time;
+        SimpleDateFormat dateFormat = new SimpleDateFormat(toParse);
+        Date ret;
+        try {
+            ret = dateFormat.parse(dateTime);
+        }catch (ParseException e){
+            date = "dd/MM/yyyy";
+            toParse = date + time;
+            try {
+                dateFormat = new SimpleDateFormat(toParse);
+                ret = dateFormat.parse(dateTime);
+            }catch (ParseException ex){
+                date = "yyyy-MM-dd";
+                toParse = date + time;
+                try {
+                    dateFormat = new SimpleDateFormat(toParse);
+                    ret = dateFormat.parse(dateTime);
+                }catch (ParseException exx){
+                    date = "yyyy/MM/dd";
+                    toParse = date + time;
+                    try {
+                        dateFormat = new SimpleDateFormat(toParse);
+                        ret = dateFormat.parse(dateTime);
+                    }catch (ParseException err){
+                        throw new ParseException("bad date", 1);
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+}

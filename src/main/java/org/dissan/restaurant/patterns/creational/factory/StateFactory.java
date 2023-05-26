@@ -31,10 +31,10 @@ public class StateFactory {
     public static @NotNull CliState getInstance(@NotNull CliStateEnum cliStateEnum, UserBean bean, CliState currentState) throws CliUiException {
         switch (cliStateEnum){
             case ATTENDANT:
-                return new AttendantHomeCliState(bean);
+                return new AttendantHomeCliState(bean, currentState);
             case COOKER:
             case MANAGER:
-                return new ManagerHomeCliState(bean);
+                return new ManagerHomeCliState(bean, currentState);
             case HOME:
             case LOGIN:
                 return getInstance(cliStateEnum, currentState);

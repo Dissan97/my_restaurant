@@ -7,7 +7,7 @@ import org.json.JSONObject;
 
 public class UserDaoDb {
     @Contract(pure = true)
-    public static @Nullable JSONArray getUserByUserName(String usr) {
+    public static @Nullable JSONObject getUserByUserName(String usr) {
         return null;
     }
 

@@ -1,5 +1,7 @@
 package org.dissan.restaurant.patterns.behavioral.state.cli;
 
+import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.ShiftBeanCommand;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.beans.api.ShiftScheduleBeanApi;
 import org.dissan.restaurant.cli.utils.OutStream;
@@ -8,9 +10,11 @@ import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
-import org.dissan.restaurant.models.ModelUtil;
+import org.dissan.restaurant.models.AbstractUser;
+import org.dissan.restaurant.models.dao.user.UserDao;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -19,8 +23,9 @@ public class ManagerHomeCliState extends AccountHomeCliState{
     private ShiftManager shiftManager;
     private final ShiftScheduleBeanApi scheduleBean;
     private Map<Integer, String> shiftCache = null;
-    public ManagerHomeCliState(@NotNull UserBean bean) {
+    public ManagerHomeCliState(@NotNull UserBean bean, CliState currentState) {
         super(ManagerHomeCliState.class.getSimpleName(),bean);
+        previousState = currentState;
         setShiftManager(new ShiftManager());
         scheduleBean = getShiftManager().getBean();
     }
@@ -50,7 +55,6 @@ public class ManagerHomeCliState extends AccountHomeCliState{
             case "help":
             case "4":
                 showHelp();
-                updateUi();
                 break;
             case "exit":
             case "5":
@@ -76,13 +80,10 @@ public class ManagerHomeCliState extends AccountHomeCliState{
         if (this.shiftCache == null){
             fillShiftCache();
         }
-
-        String sCode = getUserInput("Shift code");
-        String eCode = getUserInput("Employee code");
-        String date = getUserInput("date of shift");
-
+        parseShiftCommand(0);
         try {
-            this.shiftManager.assignShift(sCode, eCode, date);
+            this.shiftManager.assignShift();
+            outline("shift assigned");
         } catch (EmployeeDaoException | ShiftDaoException | ShiftDateException | ShiftScheduleDaoException e) {
             outline(e.getMessage());
         }finally {
@@ -91,21 +92,61 @@ public class ManagerHomeCliState extends AccountHomeCliState{
 
     }
 
+    private void parseShiftCommand(int op) {
+        String entry;
+        String message;
+        ShiftBeanCommand command;
+        switch (op) {
+            case 0:
+                printShifts();
+                message = "shift code";
+                command = ShiftBeanCommand.SHIFT_CODE;
+                break;
+            case 1:
+                message = "employee code";
+                command = ShiftBeanCommand.EMPLOYEE_CODE;
+                break;
+            case 2:
+                message = "shift date";
+                command = ShiftBeanCommand.DATE_TIME;
+                break;
+            default:
+                return;
+        }
+        entry = getUserInput(message);
+
+        try {
+            this.scheduleBean.insertCommand(command, entry);
+        } catch (BadCommanEntryException e) {
+            outline(e.getMessage());
+            entry = getUserInput("continue ? y - n");
+            if (entry.equalsIgnoreCase("y") || entry.equalsIgnoreCase("yes")){
+                parseShiftCommand(op);
+            }
+        }
+
+        if (op < 2){
+            parseShiftCommand(op + 1);
+        }
+    }
+
+    private void printShifts() {
+        StringBuilder builder = new StringBuilder("\n");
+        for (Map.Entry<Integer, String> entry:
+        this.shiftCache.entrySet()) {
+            builder.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+        out(builder.toString());
+    }
+
     private void fillShiftCache() {
+        this.shiftCache = new HashMap<>();
         List<String> shifts = this.scheduleBean.getShifts();
         int index = 1;
         for (String s:
              shifts) {
             this.shiftCache.put(index++, s);
         }
-    }
-
-    private void outValidShift(){
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<Integer, String> entry : this.shiftCache.entrySet()) {
-            builder.append(entry.getKey()).append(": ").append(entry.getValue()).append('\n');
-        }
-        outline(builder.toString());
     }
 
     private void viewSchedules() {
@@ -121,5 +162,15 @@ public class ManagerHomeCliState extends AccountHomeCliState{
 
     public void setShiftManager(ShiftManager shiftManager) {
         this.shiftManager = shiftManager;
+    }
+
+    public static void main(String[] args) {
+        UserDao dao = new UserDao();
+        AbstractUser user = dao.getUserByUsername("manager");
+        UserBean ub = new UserBean();
+        ub.setUser(user);
+        ManagerHomeCliState cliState = new ManagerHomeCliState(ub, null);
+        cliState.updateUi();
+
     }
 }

@@ -1,0 +1,6 @@
+{
+  "1": "add_item",
+  "2": "remove_item",
+  "3": "send_order",
+  "4": "pay"
+}

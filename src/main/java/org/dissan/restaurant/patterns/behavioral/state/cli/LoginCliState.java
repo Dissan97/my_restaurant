@@ -1,7 +1,7 @@
 package org.dissan.restaurant.patterns.behavioral.state.cli;
 
 import org.dissan.restaurant.beans.BadCommanEntryException;
-import org.dissan.restaurant.beans.EnumCommand;
+import org.dissan.restaurant.beans.UserBeanCommand;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.controllers.LoginController;
 import org.dissan.restaurant.controllers.exceptions.UserAlreadyExistException;
@@ -68,7 +68,6 @@ public class LoginCliState extends CliState{
             case "help":
             case "4":
                 showHelp();
-                updateUi();
                 break;
             case BACK:
             case "5":
@@ -86,31 +85,31 @@ public class LoginCliState extends CliState{
             while (op < 7) {
                 switch (op) {
                     case 0:
-                        insertOp(EnumCommand.USERNAME, EnumCommand.USERNAME.name().toLowerCase());
+                        insertOp(UserBeanCommand.USERNAME, UserBeanCommand.USERNAME.name().toLowerCase());
                         op = 1;
                         break;
                     case 1:
-                        insertOp(EnumCommand.PASSWORD, EnumCommand.PASSWORD.name().toLowerCase());
+                        insertOp(UserBeanCommand.PASSWORD, UserBeanCommand.PASSWORD.name().toLowerCase());
                         op = 2;
                         break;
                     case 2:
-                        insertOp(EnumCommand.NAME, EnumCommand.NAME.name().toLowerCase());
+                        insertOp(UserBeanCommand.NAME, UserBeanCommand.NAME.name().toLowerCase());
                         op = 3;
                         break;
                     case 3:
-                        insertOp(EnumCommand.SURNAME, EnumCommand.SURNAME.name().toLowerCase());
+                        insertOp(UserBeanCommand.SURNAME, UserBeanCommand.SURNAME.name().toLowerCase());
                         op = 4;
                         break;
                     case 4:
-                        insertOp(EnumCommand.CITY_OF_BIRH, EnumCommand.CITY_OF_BIRH.name().toLowerCase());
+                        insertOp(UserBeanCommand.CITY_OF_BIRH, UserBeanCommand.CITY_OF_BIRH.name().toLowerCase());
                         op = 5;
                         break;
                     case 5:
-                        insertOp(EnumCommand.DATE, EnumCommand.DATE.name().toLowerCase());
+                        insertOp(UserBeanCommand.DATE, UserBeanCommand.DATE.name().toLowerCase());
                         op = 6;
                         break;
                     case 6:
-                        insertOp(EnumCommand.ROLE, EnumCommand.ROLE.name().toLowerCase());
+                        insertOp(UserBeanCommand.ROLE, UserBeanCommand.ROLE.name().toLowerCase());
                         op = 7;
                         break;
                     default:
@@ -138,12 +137,12 @@ public class LoginCliState extends CliState{
             while (op < 2) {
                 switch (op) {
                     case 0:
-                        insertOp(EnumCommand.USERNAME, EnumCommand.USERNAME.name().toLowerCase());
+                        insertOp(UserBeanCommand.USERNAME, UserBeanCommand.USERNAME.name().toLowerCase());
                         op = 1;
                         break;
                     case 1:
                         op = 2;
-                        insertOp(EnumCommand.PASSWORD, EnumCommand.PASSWORD.name().toLowerCase());
+                        insertOp(UserBeanCommand.PASSWORD, UserBeanCommand.PASSWORD.name().toLowerCase());
                         break;
                     default:
                         op = 3;
@@ -163,7 +162,7 @@ public class LoginCliState extends CliState{
         this.controller.singIn();
     }
 
-    private void insertOp(EnumCommand command, String cmd) throws BadCommanEntryException {
+    private void insertOp(UserBeanCommand command, String cmd) throws BadCommanEntryException {
         String msg = super.getUserInput(cmd);
         this.bean.insertCommand(command, msg);
     }

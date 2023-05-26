@@ -1,6 +1,6 @@
 package org.dissan.restaurant.beans;
 
-public enum EnumCommand {
+public enum UserBeanCommand {
     USERNAME,
     PASSWORD,
     FLUSH,
@@ -8,6 +8,5 @@ public enum EnumCommand {
     SURNAME,
     CITY_OF_BIRH,
     DATE,
-    CODE,
     ROLE
 }

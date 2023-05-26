@@ -1,6 +1,5 @@
 package org.dissan.restaurant.models.dao.user;
 
-import org.dissan.restaurant.cli.utils.OutStream;
 import org.dissan.restaurant.controllers.exceptions.UserAlreadyExistException;
 import org.dissan.restaurant.models.AbstractUser;
 import org.dissan.restaurant.models.ConcreteUser;
@@ -16,49 +15,51 @@ import java.util.logging.Logger;
 
 public class UserDao {
     private boolean local = true;
-    public static final Logger LOGGER = Logger.getLogger(UserDao.class.getSimpleName());
-    public AbstractUser getUserByUsername(String username){
-        JSONArray array;
+    private static final String USERNAME = "username";
+    private static final String PASSWORD = "password";
+    private static final String NAME = "name";
+    private static final String SURNAME = "surname";
+    private static final String CITY_OF_BIRTH = "cityOfBirth";
+    private static final String DATE_OF_BIRTH = "dateOfBirth";
+    private static final String ROLE = "role";
+    public AbstractUser getUserByUsername(String uName){
+        JSONObject object;
         //Choosing to which persistence model get from my data
         if (this.isLocal()) {
-            array = UserDaoFs.getUserByUserName(username);
+            object = UserDaoFs.getUserByUserName(uName);
         } else {
-            array = UserDaoDb.getUserByUserName(username);
+            object = UserDaoDb.getUserByUserName(uName);
         }
-        if (array == null){
+        if (object == null){
             return null;
         }
         //Filling user data
-        AbstractUser user = new ConcreteUser();
-        user.setUsername(username);
-        user.setPassword(array.getString(0));
-        OutStream.println(array.getString(0));
-        user.setName(array.getString(1));
-        user.setSurname(array.getString(2));
-        user.setCityOfBirth(array.getString(3));
-        try {
-            user.setDateOfBirth(array.getString(4));
-        } catch (ParseException e) {
-            LOGGER.info(e.getMessage());
-        }
-        UserRole role = UserRole.valueOf(array.getString(5));
-        user.setRole(role);
-        return user;
-        }
+        return buildUser(object);
+    }
+
+    private @NotNull AbstractUser buildUser(@NotNull JSONObject object){
+        int i = 0;
+        int b = 0;
+
+        String usr = object.getString(USERNAME);
+        String pwd = object.getString(PASSWORD);
+        String nm = object.getString(NAME);
+        String sn = object.getString(SURNAME);
+        String city = object.getString(CITY_OF_BIRTH);
+        String date = object.getString(DATE_OF_BIRTH);
+        String rl = object.getString(ROLE);
+        return new ConcreteUser(usr, pwd, nm, sn, city, date, rl);
+    }
 
     public void putUser(@NotNull AbstractUser userData) throws IOException, UserAlreadyExistException {
-
-
         JSONObject object = new JSONObject();
-        JSONArray array = new JSONArray();
-        array.put(userData.getPassword());
-        array.put(userData.getName());
-        array.put(userData.getSurname());
-        array.put(userData.getCityOfBirth());
-        array.put(userData.getDateOfBirth());
-        array.put(userData.getRole().name());
-        object.put(userData.getUsername(), array);
-
+        object.put(USERNAME,userData.getUsername());
+        object.put(PASSWORD,userData.getPassword());
+        object.put(NAME,userData.getName());
+        object.put(SURNAME,userData.getSurname());
+        object.put(CITY_OF_BIRTH,userData.getCityOfBirth());
+        object.put(DATE_OF_BIRTH,userData.getDateOfBirth());
+        object.put(ROLE,userData.getRole().name());
         if (this.isLocal()){
             UserDaoFs.putUser(object);
         }else {
@@ -66,17 +67,8 @@ public class UserDao {
         }
     }
 
-    public void setLocal(boolean local) {
-        this.local = local;
-    }
-
-    public boolean isLocal() {
-        return local;
-    }
-
-
     public List<AbstractUser> pullUsers() {
-        List<AbstractUser> employeeList = new ArrayList<>();
+        List<AbstractUser> userList = new ArrayList<>();
         JSONArray array;
         if (local){
             array = UserDaoFs.pullUsers();
@@ -86,24 +78,18 @@ public class UserDao {
         if (array != null){
             for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.getJSONObject(i);
-                AbstractUser user = new ConcreteUser();
-                String key = object.keys().next();
-                user.setUsername(key);
-                user.setPassword(object.getJSONArray(key).getString(0));
-                user.setName(object.getJSONArray(key).getString(1));
-                user.setSurname(object.getJSONArray(key).getString(2));
-                user.setCityOfBirth(object.getJSONArray(key).getString(3));
-                try {
-                    user.setDateOfBirth(object.getJSONArray(key).getString(4));
-                } catch (ParseException e) {
-                    LOGGER.info(e.getMessage());
-                }
-                UserRole role = UserRole.valueOf(object.getJSONArray(key).getString(5));
-                user.setRole(role);
-                employeeList.add(user);
+                userList.add(buildUser(object));
             }
         }
-        return employeeList;
+        return userList;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
+    }
+
+    public boolean isLocal() {
+        return local;
     }
 
 }

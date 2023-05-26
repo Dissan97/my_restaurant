@@ -5,12 +5,10 @@ import org.dissan.restaurant.models.AbstractUser;
 import org.dissan.restaurant.models.UserRole;
 import org.jetbrains.annotations.NotNull;
 import java.util.EnumMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UserBean implements UserBeanApi {
     private AbstractUser user;
-    private final EnumMap<EnumCommand, String> viewEntries = new EnumMap<>(EnumCommand.class);
+    private final EnumMap<UserBeanCommand, String> viewEntries = new EnumMap<>(UserBeanCommand.class);
 
     public AbstractUser getUser() {
         return user;
@@ -50,21 +48,21 @@ public class UserBean implements UserBeanApi {
         return user.getRole();
     }
     @Override
-    public void insertCommand(@NotNull EnumCommand command, String entry) throws BadCommanEntryException{
+    public void insertCommand(@NotNull UserBeanCommand command, String entry) throws BadCommanEntryException{
 
         switch (command){
             case PASSWORD:
-                handlePassword(entry);
+                BeanUtil.handlePassword(entry);
                 break;
             case USERNAME:
-                handleUserName(entry);
+                BeanUtil.handleUserName(entry);
                 break;
             case NAME:
             case ROLE:
             case SURNAME:
             case CITY_OF_BIRH:
             case DATE:
-                handleCommon(entry);
+                BeanUtil.handleCommon(entry);
                 break;
             case FLUSH:
                 clean();
@@ -76,40 +74,8 @@ public class UserBean implements UserBeanApi {
         this.viewEntries.put(command, entry);
     }
 
-    private void handleCommon(String entry) throws BadCommanEntryException {
-        if (entry == null){
-            throw new BadCommanEntryException("Entry is null");
-        }
 
-        if (entry.isEmpty()){
-            throw new BadCommanEntryException("Entry is empty");
-        }
-    }
-
-
-    private void handleUserName(String entry) throws BadCommanEntryException {
-        this.handleCommon(entry);
-        if (entry.length() < 6){
-            throw new BadCommanEntryException("this field must contains at least 6 letters");
-        }
-    }
-
-    private void handlePassword(String entry) throws BadCommanEntryException {
-        this.handleUserName(entry);
-
-        final String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!.?_]).*$";
-
-        Pattern regex = Pattern.compile(pattern);
-        Matcher matcher = regex.matcher(entry);
-
-        if (!matcher.matches()){
-            throw new BadCommanEntryException("\nPassword must contains upper letter and has num and special character example:" +
-                    "\nThis.isG00d - thisIsNot");
-        }
-
-    }
-
-    public String getEntry(EnumCommand command) throws BadCommanEntryException {
+    public String getEntry(UserBeanCommand command) throws BadCommanEntryException {
         String ret = this.viewEntries.get(command);
         if (ret == null){
             throw new BadCommanEntryException(command.name() + " has no entry");
@@ -117,7 +83,7 @@ public class UserBean implements UserBeanApi {
         return ret;
     }
 
-
+    @Override
     public void clean(){
         this.viewEntries.clear();
     }

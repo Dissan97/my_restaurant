@@ -1,0 +1,22 @@
+[
+  {
+    "name" : "Carbonara",
+    "price": 11.00,
+    "ingredients": ["Pasta", "Egg", "Pecorino", "Jowls", "Pepper"]
+  },
+  {
+    "name" : "Amatriciana",
+    "price": 10.50,
+    "ingredients": ["Pasta", "Tomato sauce", "Pecorino", "Jowls"]
+  },
+  {
+    "name" : "Roast beef",
+    "price": 21.50,
+    "ingredients": ["Beef", "Onion", "Carrot", "Celery", "Garlic", "Thyme", "Rosemary", "Bay", "Sage"]
+  },
+  {
+    "name" : "Steak",
+    "price": 18.50,
+    "ingredients": ["Beef","Rosemary"]
+  }
+]

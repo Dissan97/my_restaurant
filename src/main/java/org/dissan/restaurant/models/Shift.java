@@ -6,9 +6,6 @@ public class Shift {
     private String task;
     private String role;
 
-    public Shift() {
-    }
-
     public Shift(String cd, String tsk, String rl) {
         this.setCode(cd);
         this.setTask(tsk);
