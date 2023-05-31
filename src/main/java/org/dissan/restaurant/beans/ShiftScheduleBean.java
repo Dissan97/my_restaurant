@@ -5,9 +5,7 @@ import org.dissan.restaurant.models.Shift;
 import org.dissan.restaurant.models.ShiftSchedule;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
+import java.util.*;
 
 public class ShiftScheduleBean implements ShiftScheduleBeanApi {
 
@@ -15,6 +13,7 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
     private List<ShiftSchedule> shiftScheduleList;
     private List<Shift> shiftList;
     private final EnumMap<ShiftBeanCommand, String> viewEntries = new EnumMap<>(ShiftBeanCommand.class);
+
 
     public void setUpdateRequestList(List<ShiftSchedule> ssl) {
         this.shiftScheduleList = ssl;
@@ -24,13 +23,6 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
         this.shiftList = sl;
     }
 
-    public void setShiftSchedule(ShiftSchedule ss) {
-        this.shiftSchedule = ss;
-    }
-
-    public ShiftSchedule getShiftSchedule() {
-        return shiftSchedule;
-    }
 
     public List<ShiftSchedule> getShiftScheduleList() {
         return shiftScheduleList;
@@ -87,6 +79,19 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
         return builder.toString();
     }
 
+    @Override
+    public Map<Integer, String> getMyShiftSchedules() {
+        Map<Integer, String> mySchedules = new HashMap<>();
+
+        int index = 0;
+        for (ShiftSchedule sSchedule:
+                this.shiftScheduleList) {
+            mySchedules.put(index, sSchedule.toString());
+        }
+
+        return mySchedules;
+    }
+
     public void setShiftScheduleList(List<ShiftSchedule> schedules) {
         this.shiftScheduleList = schedules;
     }
@@ -94,4 +99,6 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
     public String getRelativeEntry(ShiftBeanCommand command) {
         return this.viewEntries.get(command);
     }
+
+
 }

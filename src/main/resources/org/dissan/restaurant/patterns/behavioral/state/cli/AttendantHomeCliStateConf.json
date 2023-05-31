@@ -1,4 +1,4 @@
 {
-  "get_schedules": "get_schedules",
-  "request_update": "request_update"
+    "1": "order_to_deliver",
+    "2": "handle_bill"
 }

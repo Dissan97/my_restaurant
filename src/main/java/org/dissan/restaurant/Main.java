@@ -1,6 +1,7 @@
 package org.dissan.restaurant;
 
 import org.dissan.restaurant.cli.utils.OutStream;
+import org.dissan.restaurant.fxml.controllers.GuiController;
 import org.dissan.restaurant.patterns.behavioral.state.cli.CliState;
 import org.dissan.restaurant.patterns.behavioral.state.cli.CliStateEnum;
 import org.dissan.restaurant.patterns.behavioral.state.cli.exceptions.CliUiException;
@@ -20,16 +21,15 @@ public class Main {
         }catch (ArrayIndexOutOfBoundsException | NullPointerException e){
             view = CLI;
         }
-        startApp(view);
+        startApp(view, args);
     }
 
-    private static void startApp(@NotNull String view) throws CliUiException {
+    private static void startApp(@NotNull String view, String...args) throws CliUiException {
         if (view.equals(CLI)){
             CliState home = StateFactory.getInstance(CliStateEnum.HOME, null);
             home.updateUi();
         }else if (view.equals(GUI)){
-            //todo gui implementation
-            OutStream.println("not implemented yet");
+            GuiController.launchGui(args);
         }else {
             OutStream.println("ERROR SOMETHING WRONG");
         }

@@ -1,9 +1,7 @@
 package org.dissan.restaurant.controllers;
 
-import org.dissan.restaurant.beans.BeanUtil;
-import org.dissan.restaurant.beans.ShiftBeanCommand;
+import org.dissan.restaurant.beans.*;
 import org.dissan.restaurant.controllers.api.ShiftManagerEmployeeApi;
-import org.dissan.restaurant.beans.ShiftScheduleBean;
 import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
@@ -35,9 +33,7 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
         this.shiftScheduleDao = new ShiftScheduleDao();
         pullShifts();
         pullEmployees();
-
     }
-
 
     private void pullShifts() {
         ShiftDao dao = new ShiftDao();
@@ -76,7 +72,10 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
         dao.pushShiftSchedule(shiftSchedule);
     }
 
-    public void requestUpdate(String sCode, String eCode, String dateTime) throws EmployeeDaoException, ShiftDaoException, ShiftScheduleDaoException, ShiftDateException {
+    public void requestUpdate() throws EmployeeDaoException, ShiftDaoException, ShiftScheduleDaoException, ShiftDateException {
+        String sCode = this.bean.getRelativeEntry(ShiftBeanCommand.SHIFT_CODE);
+        String eCode = this.bean.getRelativeEntry(ShiftBeanCommand.EMPLOYEE_CODE);
+        String dateTime = this.bean.getRelativeEntry(ShiftBeanCommand.DATE_TIME);
         controlEmployee(eCode);
         controlShift(sCode);
 	    ShiftSchedule schedule = this.getRelativeShiftSchedule(sCode, eCode, dateTime);
@@ -85,8 +84,15 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
     }
 
     @Override
-    public void getEmpSchedule(String eCode) {
+    public void getMySchedule(String eCode) {
         //to implement
+        ShiftScheduleDao dao = new ShiftScheduleDao();
+        List<ShiftSchedule> shiftScheduleList = dao.pullShiftSchedules();
+        shiftScheduleList.removeIf(
+                shiftSchedule -> !shiftSchedule.getEmployeeCode().equals(eCode) && !shiftSchedule.isUpdateRequest()
+        );
+
+        this.bean.setShiftScheduleList(shiftScheduleList);
     }
 
     public void acceptRequest(String sCode, String eCode, String dt){
@@ -94,7 +100,6 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
     }
 
     public void getUpdateRequest(){
-
 	    List<ShiftSchedule> shiftScheduleList;
 	    shiftScheduleList = shiftScheduleDao.getShiftUpdateRequest();
 	    if (!shiftScheduleList.isEmpty()){
@@ -154,13 +159,15 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
                 return false;
             }
         }
-
         return true;
     }
 
+    @Override
     public ShiftScheduleBean getBean() {
         return this.bean;
     }
+
+
 
 
 }

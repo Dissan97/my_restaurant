@@ -16,11 +16,13 @@ public abstract class AccountHomeCliState extends CliState {
 
     protected void showAccountInfo(){
         outline(
-            "Account information:" + '\n' +
-            "name: " + this.userBean.getName() + '\n' +
-            "surname: " + this.userBean.getSurname() + '\n' +
-            "city of birth: " + this.userBean.getCityOfBirth() + '\n' +
-            "date of birth: " + this.userBean.getDateOfBirth()
+                "Account information:" + '\n' +
+                        "name: " + this.userBean.getName() + '\n' +
+                        "surname: " + this.userBean.getSurname() + '\n' +
+                        "city of birth: " + this.userBean.getCityOfBirth() + '\n' +
+                        "date of birth: " + this.userBean.getDateOfBirth()
         );
     }
+
+
 }

@@ -1,6 +1,7 @@
 package org.dissan.restaurant.controllers;
 
 import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.EmployeeBean;
 import org.dissan.restaurant.beans.UserBeanCommand;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.controllers.exceptions.UserAlreadyExistException;
@@ -9,8 +10,11 @@ import org.dissan.restaurant.controllers.exceptions.UserNotFoundException;
 import org.dissan.restaurant.controllers.util.HashUtil;
 import org.dissan.restaurant.models.AbstractUser;
 import org.dissan.restaurant.models.ConcreteUser;
+import org.dissan.restaurant.models.Employee;
+import org.dissan.restaurant.models.dao.user.EmployeeDao;
 import org.dissan.restaurant.models.dao.user.UserDao;
 import java.io.IOException;
+import java.util.List;
 
 public class LoginController {
     private final UserBean userBean;
@@ -70,5 +74,19 @@ public class LoginController {
 
     public void setDao(UserDao dao) {
         this.dao = dao;
+    }
+
+    public EmployeeBean getEmployeeBean(UserBean userBean) {
+        List<Employee> employeeList = EmployeeDao.pullEmployees();
+        EmployeeBean employeeBean = null;
+        if (employeeList != null) {
+            for (Employee e :
+                    employeeList) {
+                if (userBean.getUsername().equals(e.getUser().getUsername())) {
+                    employeeBean = new EmployeeBean(e);
+                }
+            }
+        }
+        return employeeBean;
     }
 }

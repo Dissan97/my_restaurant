@@ -92,7 +92,6 @@ public class ShiftScheduleDaoFs {
     public static void pushSchedule(JSONObject object) throws ShiftScheduleDaoException {
         loadSchedules();
         String code = getCode(object);
-        String ss = String.valueOf(LOCAL_CACHE.putIfAbsent(code, object));
         if (LOCAL_CACHE.putIfAbsent(code, object) == null){
             throw new ShiftScheduleDaoException("shift already exist");
         }

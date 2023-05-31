@@ -4,14 +4,11 @@ import org.dissan.restaurant.beans.BadCommanEntryException;
 import org.dissan.restaurant.beans.ShiftBeanCommand;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.beans.api.ShiftScheduleBeanApi;
-import org.dissan.restaurant.cli.utils.OutStream;
 import org.dissan.restaurant.controllers.ShiftManager;
 import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
-import org.dissan.restaurant.models.AbstractUser;
-import org.dissan.restaurant.models.dao.user.UserDao;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -52,15 +49,21 @@ public class ManagerHomeCliState extends AccountHomeCliState{
             case "3":
                 viewSchedules();
                 break;
-            case "help":
+            case "view_requests:":
             case "4":
+                break;
+            case "accept_request":
+            case "5":
+                break;
+            case "help":
+            case "6":
                 showHelp();
                 break;
             case "exit":
-            case "5":
+            case "7":
                 break;
             case "account":
-            case "6":
+            case "8":
                 showAccountInfo();
                 break;
             default:
@@ -73,7 +76,6 @@ public class ManagerHomeCliState extends AccountHomeCliState{
 
     private void getEmployeesSchedule() {
         this.shiftManager.pullSchedules();
-        OutStream.println(this.scheduleBean.getAllShiftSchedules());
     }
 
     private void assignShift() {
@@ -164,13 +166,5 @@ public class ManagerHomeCliState extends AccountHomeCliState{
         this.shiftManager = shiftManager;
     }
 
-    public static void main(String[] args) {
-        UserDao dao = new UserDao();
-        AbstractUser user = dao.getUserByUsername("manager");
-        UserBean ub = new UserBean();
-        ub.setUser(user);
-        ManagerHomeCliState cliState = new ManagerHomeCliState(ub, null);
-        cliState.updateUi();
 
-    }
 }

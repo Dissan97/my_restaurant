@@ -26,21 +26,25 @@ public class BeanUtil {
 
 
     public static void handleUserName(String entry) throws BadCommanEntryException {
+        handleUserName(entry, "username");
+    }
+
+    public static void handleUserName(String entry, String field) throws BadCommanEntryException {
         BeanUtil.handleCommon(entry);
         if (entry.length() < 6){
-            throw new BadCommanEntryException("this field must contains at least 6 letters");
+            throw new BadCommanEntryException("field " + field + " must contains at least 6 letters");
         }
     }
 
     public static void handlePassword(String entry) throws BadCommanEntryException {
-        BeanUtil.handleUserName(entry);
+        BeanUtil.handleUserName(entry, "password");
         final String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!.?_]).*$";
 
         Pattern regex = Pattern.compile(pattern);
         Matcher matcher = regex.matcher(entry);
 
         if (!matcher.matches()) {
-            throw new BadCommanEntryException("\nPassword must contains upper letter and has num and special character example:" +
+            throw new BadCommanEntryException("\nfield Password must contains upper letter and has num and special character example:" +
                     "\nThis.isG00d - thisIsNot");
         }
     }

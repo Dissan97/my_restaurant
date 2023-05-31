@@ -1,10 +1,9 @@
-package org.dissan.restaurant.models.dao.Table;
+package org.dissan.restaurant.models.dao.table;
 
 import org.dissan.restaurant.models.Table;
 import org.dissan.restaurant.models.dao.shift.ShiftDaoFs;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONTokener;
 import java.io.IOException;
 import java.io.InputStream;
