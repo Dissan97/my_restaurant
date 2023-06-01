@@ -1,19 +1,17 @@
 package org.dissan.restaurant.patterns.behavioral.observer;
 
-import org.dissan.restaurant.models.Table;
-import org.dissan.restaurant.models.TableState;
-import org.jetbrains.annotations.NotNull;
+import org.dissan.restaurant.beans.TableBean;
+import org.dissan.restaurant.patterns.behavioral.observer.subjects.TableSubjectStates;
 
 public class AttendantTableObserver extends TableObserver{
-    public AttendantTableObserver(Table table) {
-        super(table);
+    public AttendantTableObserver() {
+
     }
 
     @Override
-    public void update(@NotNull Table table) {
-        TableState tableState = table.getTableState();
-        if (tableState == TableState.READY_TO_DELIVER){
-            outline(tableState);
-        }
+    public void update(TableObserver observer, TableBean tableBean, TableSubjectStates state) {
+
     }
+
+
 }

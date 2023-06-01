@@ -1,14 +1,17 @@
 package org.dissan.restaurant.patterns.behavioral.observer;
 
+import org.dissan.restaurant.beans.TableBean;
 import org.dissan.restaurant.cli.utils.OutStream;
 import org.dissan.restaurant.models.Table;
 import org.dissan.restaurant.models.TableState;
+import org.dissan.restaurant.patterns.behavioral.observer.subjects.TableSubject;
+import org.dissan.restaurant.patterns.behavioral.observer.subjects.TableSubjectStates;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
 public abstract class TableObserver {
-    public TableObserver(Table table) {
+    public TableObserver() {
 
     }
 
@@ -16,5 +19,6 @@ public abstract class TableObserver {
         OutStream.println("order " + tableState.name().toLowerCase(Locale.ROOT));
     }
 
-    public abstract void update(Table table);
+    // TODO: 31/05/23 update the implementation flow
+    public abstract void update(TableObserver observer, TableBean tableBean, TableSubjectStates state);
 }

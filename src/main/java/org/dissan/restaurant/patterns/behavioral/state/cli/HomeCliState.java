@@ -1,12 +1,6 @@
 package org.dissan.restaurant.patterns.behavioral.state.cli;
 
-import org.dissan.restaurant.beans.TableBean;
 import org.dissan.restaurant.cli.utils.OutStream;
-import org.dissan.restaurant.controllers.OrderController;
-import org.dissan.restaurant.models.Attendant;
-import org.dissan.restaurant.models.ConcreteUser;
-import org.dissan.restaurant.models.Employee;
-import org.dissan.restaurant.models.Table;
 import org.dissan.restaurant.patterns.behavioral.state.cli.exceptions.CliUiException;
 import org.dissan.restaurant.patterns.creational.factory.StateFactory;
 
@@ -51,6 +45,7 @@ public class HomeCliState extends CliState{
         }
     }
 
+    //todo Some controller that shows me the available table... --->
     private void selectTable() {
 
     }

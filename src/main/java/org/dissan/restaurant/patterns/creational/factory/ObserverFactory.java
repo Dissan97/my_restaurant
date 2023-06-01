@@ -11,14 +11,14 @@ import org.jetbrains.annotations.Nullable;
 public class ObserverFactory {
     private ObserverFactory() {}
 
-    public static @Nullable TableObserver getInstance(@NotNull Table table, @NotNull TableActor actor){
+    public static @Nullable TableObserver getInstance(@NotNull TableActor actor){
         switch (actor) {
             case ATTENDANT:
-                return new AttendantTableObserver(table);
+                return new AttendantTableObserver();
             case COOKER:
-                return new CookerTableObserver(table);
+                return new CookerTableObserver();
             case CUSTOMER:
-                return new CustomerTableObserver(table);
+                return new CustomerTableObserver();
             default:
                 return null;
         }

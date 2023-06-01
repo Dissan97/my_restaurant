@@ -1,11 +1,17 @@
 package org.dissan.restaurant.controllers.api;
 
 import org.dissan.restaurant.beans.TableBean;
-import org.dissan.restaurant.models.MealItem;
+import org.dissan.restaurant.patterns.structural.facade.TableDaoException;
+
+import java.util.List;
 
 public interface CustomerOrderApi {
-    void addItem(MealItem item);
+
     void sendOrder();
     void pay();
-    TableBean getMenuBean();
+    TableBean getTableBean(String tableName, int clients) throws TableDaoException;
+    List<String> getFreeTables();
+
+    String printFreeTables();
+
 }

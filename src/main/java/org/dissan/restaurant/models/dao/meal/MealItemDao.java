@@ -25,14 +25,14 @@ public class MealItemDao {
             JSONArray array = pullMenuItemList();
             if (array != null) {
                 mealItemList = new ArrayList<>();
-                for (int i = 0; i < array.length(); i++) {
-                    JSONObject object = array.getJSONObject(i);
+                for (int index = 0; index < array.length(); index++) {
+                    JSONObject object = array.getJSONObject(index);
                     String name = object.getString("name");
                     double price = object.getDouble("price");
                     JSONArray ingredients = object.getJSONArray("ingredients");
                     List<String> ingredientList = new ArrayList<>();
-                    for (int j = 0; j < ingredients.length(); j++) {
-                        ingredientList.add(ingredients.getString(j));
+                    for (int ingredient = 0; ingredient < ingredients.length(); ingredient++) {
+                        ingredientList.add(ingredients.getString(ingredient));
                     }
                     MealItem item = new MealItem(name, ingredientList, price);
                     mealItemList.add(item);

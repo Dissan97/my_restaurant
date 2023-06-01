@@ -2,7 +2,9 @@ package org.dissan.restaurant.models.dao.schedule;
 
 import org.dissan.restaurant.beans.BeanUtil;
 import org.dissan.restaurant.cli.utils.OutStream;
+import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
+import org.dissan.restaurant.models.*;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +23,7 @@ public class ShiftScheduleDaoFs {
     protected static final  String EMPLOYEE_CODE = "employeeCode";
     protected static final  String SHIFT_DATE = "shiftDate";
     protected static final String UPDATE_REQUEST = "updateRequest";
-    private static final Map<String, JSONObject> LOCAL_CACHE = new HashMap<>();
+    private static final Map<Integer, JSONObject> LOCAL_CACHE = new HashMap<>();
     public static @Nullable JSONArray pullShiftSchedules() {
 
         checkLocalCache();
@@ -30,10 +32,10 @@ public class ShiftScheduleDaoFs {
             return null;
         }
 
-        Set<String> keys = LOCAL_CACHE.keySet();
+        Set<Integer> keys = LOCAL_CACHE.keySet();
         JSONArray array = new JSONArray();
         int i = 0;
-        for (String k:
+        for (Integer k:
              keys) {
             array.put(i++, LOCAL_CACHE.get(k));
         }
@@ -46,7 +48,7 @@ public class ShiftScheduleDaoFs {
             loadSchedules();
         }
 
-        for (Map.Entry<String, JSONObject> entry:
+        for (Map.Entry<Integer, JSONObject> entry:
         LOCAL_CACHE.entrySet()) {
             if (BeanUtil.goodDate(entry.getValue().getString(SHIFT_DATE), true) == null){
                 loadSchedules();
@@ -64,11 +66,9 @@ public class ShiftScheduleDaoFs {
             schedulesArray = new JSONArray(jsonTokener);
             for (int i = 0; i < schedulesArray.length(); i++){
                 JSONObject schedule = schedulesArray.getJSONObject(i);
-                String shift = schedule.getString(SHIFT);
-                String employeeCode = schedule.getString(EMPLOYEE_CODE);
                 String shiftDate = schedule.getString(SHIFT_DATE);
                 if (BeanUtil.goodDate(shiftDate, true) != null){
-                    LOCAL_CACHE.put(shift + ';' + employeeCode + ';' + shiftDate, schedule);
+                    LOCAL_CACHE.put(i, schedule);
                 }
             }
 
@@ -79,34 +79,50 @@ public class ShiftScheduleDaoFs {
     }
 
 
-    public static JSONObject pullSchedule(String sCode, String eCode, String dateTime) {
+    public static @Nullable JSONObject pullSchedule(String sCode, String eCode, String dateTime) {
         checkLocalCache();
-        return LOCAL_CACHE.get(sCode + ';' + eCode + ';' + dateTime);
+        for (Map.Entry<Integer, JSONObject> entry:
+             LOCAL_CACHE.entrySet()) {
+            JSONObject object = entry.getValue();
+
+            if (object.getString(SHIFT).equals(sCode) && object.getString(EMPLOYEE_CODE).equals(eCode)
+                && object.getString(SHIFT_DATE).equals(dateTime)){
+                return object;
+            }
+        }
+        return null;
     }
 
-    @Contract("_ -> !null")
-    private static String getCode(@NotNull JSONObject object){
-        return object.getString(SHIFT + ';' + ShiftScheduleDaoFs.EMPLOYEE_CODE + ';' +ShiftScheduleDaoFs.SHIFT_DATE);
-    }
+
 
     public static void pushSchedule(JSONObject object) throws ShiftScheduleDaoException {
         loadSchedules();
-        String code = getCode(object);
-        if (LOCAL_CACHE.putIfAbsent(code, object) == null){
-            throw new ShiftScheduleDaoException("shift already exist");
+
+        String sCode = object.getString(SHIFT);
+        String eCode = object.getString(EMPLOYEE_CODE);
+        String date = object.getString(SHIFT_DATE);
+
+        if (ShiftScheduleDaoFs.pullSchedule(sCode, eCode, date) != null) {
+            throw new  ShiftScheduleDaoException("Shift schedule exist");
         }
+
+        LOCAL_CACHE.put(LOCAL_CACHE.size(), object);
         try (BufferedWriter writer = new BufferedWriter(
                 new FileWriter(Objects.requireNonNull(ShiftScheduleDaoFs.class.getResource(SCHEDULES)).getPath())
         )){
             JSONArray array = new JSONArray();
-            for (Map.Entry <String,JSONObject> entry:
+            for (Map.Entry <Integer,JSONObject> entry:
                  LOCAL_CACHE.entrySet()) {
                 array.put(entry.getValue());
             }
             array.write(writer);
         }catch (IOException e){
-            OutStream.println("PROBLEMS: " + e.getMessage());
+            throw new ShiftScheduleDaoException("PROBLEMS: " + e.getMessage());
         }
 
+        //todo remove it
+        OutStream.println("done");
     }
+
+
 }

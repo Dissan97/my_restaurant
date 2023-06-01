@@ -2,10 +2,7 @@ package org.dissan.restaurant.patterns.behavioral.state.cli;
 
 import org.dissan.restaurant.beans.api.TableBeanApi;
 import org.dissan.restaurant.cli.utils.OutStream;
-import org.dissan.restaurant.controllers.OrderController;
-import org.dissan.restaurant.models.Attendant;
-import org.dissan.restaurant.models.ConcreteUser;
-import org.dissan.restaurant.models.Table;
+import org.dissan.restaurant.patterns.structural.facade.CustomerOrderFacade;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,16 +11,15 @@ import java.util.Map;
 
 public class OrderCliState extends CliState{
 
-    private OrderController orderController;
+    private CustomerOrderFacade orderController;
     private TableBeanApi tableBean;
     private Map<Integer, List<String>> itemMap;
 
-    public OrderCliState(CliState cliState, OrderController ctrl) {
+    public OrderCliState(CliState cliState, CustomerOrderFacade ctrl) {
         super(OrderCliState.class.getSimpleName());
         previousState = cliState;
         this.orderController = ctrl;
         this.tableBean = this.orderController.getMenuBean();
-        setPageName(this.tableBean.getTable());
     }
 
     @Override

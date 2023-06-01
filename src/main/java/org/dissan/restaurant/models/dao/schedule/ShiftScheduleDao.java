@@ -2,9 +2,7 @@ package org.dissan.restaurant.models.dao.schedule;
 
 import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
-import org.dissan.restaurant.models.Employee;
-import org.dissan.restaurant.models.Shift;
-import org.dissan.restaurant.models.ShiftSchedule;
+import org.dissan.restaurant.models.*;
 import org.dissan.restaurant.models.dao.shift.ShiftDao;
 import org.dissan.restaurant.models.dao.user.EmployeeDao;
 import org.jetbrains.annotations.NotNull;
@@ -49,6 +47,8 @@ public class ShiftScheduleDao {
         }else {
             array = ShiftScheduleDaoDb.pullShiftSchedules();
         }
+
+
 
         if (array != null) {
             for (int i = 0; i < array.length(); i++) {
@@ -99,4 +99,15 @@ public class ShiftScheduleDao {
         return schedule;
     }
 
+
+    //todo remove this main
+    public static void main(String[] args) throws ShiftDateException, ShiftScheduleDaoException {
+        Shift shift = new Shift("12346");
+        AbstractUser user = new ConcreteUser();
+        Employee emp = new Attendant(user);
+        emp.setEmployeeCode("4321");
+        ShiftSchedule schedule = new ShiftSchedule(shift, emp, "01-05-2023::10:30");
+        ShiftScheduleDao me = new ShiftScheduleDao();
+        me.pushShiftSchedule(schedule);
+    }
 }
