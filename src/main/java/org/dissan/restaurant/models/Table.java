@@ -9,7 +9,12 @@ public class Table {
     private TableState tableState;
 
     public Table(String tc) {
-        setTableCode(tc);
+        this(tc, 0);
+    }
+
+    public Table(String tableName, int customerNum) {
+        this.tableCode = tableName;
+        this.customers = customerNum;
         check = new OrderCheck(this);
     }
 

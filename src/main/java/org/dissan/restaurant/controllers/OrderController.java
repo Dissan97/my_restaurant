@@ -5,38 +5,50 @@ import org.dissan.restaurant.controllers.api.AttendantOrderApi;
 import org.dissan.restaurant.controllers.api.CookerOrderApi;
 import org.dissan.restaurant.controllers.api.CustomerOrderApi;
 import org.dissan.restaurant.models.MealItem;
+import org.dissan.restaurant.models.OrderCheck;
 import org.dissan.restaurant.models.Table;
 import org.dissan.restaurant.models.dao.meal.MealItemDao;
 import org.dissan.restaurant.patterns.behavioral.observer.TableObserver;
 
-public class OrderController implements CustomerOrderApi, CookerOrderApi, AttendantOrderApi {
+import java.util.List;
+
+public class OrderController implements  CookerOrderApi, AttendantOrderApi {
 
     private TableBean tableBean;
     private TableObserver observer;
-    public OrderController(Table table) {
-        this.tableBean = new TableBean(table);
+    public OrderController() {
+        this.tableBean = new TableBean();
         this.tableBean.setMealItem(MealItemDao.pullMenuItems());
     }
 
 
-    @Override
-    public void addItem(MealItem item) {
-
-    }
-
-    @Override
     public void sendOrder() {
-
+        List<MealItem> currentCart = this.tableBean.getCart();
+        double bill = 0.0;
+        for (MealItem mi:
+                currentCart) {
+            bill += mi.getPrice();
+        }
+        OrderCheck orderCheck = this.tableBean.getCheck();
+        orderCheck.setItems(currentCart);
+        orderCheck.setBill(bill);
     }
 
-    @Override
     public void pay() {
 
     }
 
-    @Override
-    public TableBean getMenuBean() {
+    public TableBean getTableBean(){
         return tableBean;
+    }
+
+    public TableBean getTableBean(String tableName, int clients) {
+        // TODO: 01/06/23 implement for other actors
+        return tableBean;
+    }
+
+    public List<String> getFreeTables() {
+        return null;
     }
 
     @Override
@@ -59,4 +71,9 @@ public class OrderController implements CustomerOrderApi, CookerOrderApi, Attend
 
     }
 
+    public void setTable(Table table) {
+        OrderCheck orderCheck = new OrderCheck(table);
+        this.tableBean.setCheck(orderCheck);
+        this.tableBean.setTable(table);
+    }
 }

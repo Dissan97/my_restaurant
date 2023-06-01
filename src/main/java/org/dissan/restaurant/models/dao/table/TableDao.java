@@ -1,10 +1,8 @@
-package org.dissan.restaurant.models.dao.Table;
+package org.dissan.restaurant.models.dao.table;
 
 import org.dissan.restaurant.models.Table;
-import org.dissan.restaurant.models.dao.shift.ShiftDaoFs;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.json.JSONTokener;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +20,7 @@ public class TableDao {
     }
 
     private static void fillLocalCache() {
-        try (InputStream stream = ShiftDaoFs.class.getResourceAsStream("tables.json")) {
+        try (InputStream stream = TableDao.class.getResourceAsStream("tables.json")) {
             JSONTokener jsonTokener = new JSONTokener(Objects.requireNonNull(stream));
             JSONArray tables = new JSONArray(jsonTokener);
             for (int i = 0; i < tables.length(); i++) {
