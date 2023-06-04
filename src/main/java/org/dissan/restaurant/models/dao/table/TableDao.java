@@ -1,5 +1,6 @@
 package org.dissan.restaurant.models.dao.table;
 
+import javafx.scene.control.Tab;
 import org.dissan.restaurant.models.Table;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
@@ -32,5 +33,26 @@ public class TableDao {
         }catch (IOException | NullPointerException e){
             LOGGER.warning(e.getMessage());
         }
+    }
+
+    public static Table getTableByName(String tableName) {
+        if (LOCAL_CACHE.isEmpty()){
+            fillLocalCache();
+        }
+        return LOCAL_CACHE.get(tableName);
+    }
+
+    public static List<Table> pullTables() {
+        List<Table> tableList = new ArrayList<>();
+        if(LOCAL_CACHE.isEmpty()){
+            fillLocalCache();
+        }
+
+        for (Map.Entry<String, Table> entry:
+             LOCAL_CACHE.entrySet()) {
+            tableList.add(entry.getValue());
+        }
+
+        return tableList;
     }
 }

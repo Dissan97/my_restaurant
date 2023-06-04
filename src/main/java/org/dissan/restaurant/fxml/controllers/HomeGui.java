@@ -11,7 +11,7 @@ public class HomeGui{
 
     @FXML
     public void order() {
-        //some commet
+        GuiController.openNewWindow(Scenes.ORDER_HOME);
     }
 
 }

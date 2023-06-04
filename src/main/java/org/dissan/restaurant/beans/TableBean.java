@@ -16,6 +16,7 @@ public class TableBean implements TableBeanApi {
     private OrderCheck check;
 
     private List<MealItem> cart = new ArrayList<>();
+    private boolean validPay = false;
 
     public void setMealItem(List<MealItem> items) {
         this.mealItems = items;
@@ -98,5 +99,13 @@ public class TableBean implements TableBeanApi {
 
     public Table getTable() {
         return table;
+    }
+
+    public void setValidPay(boolean vPay) {
+        this.validPay = vPay;
+    }
+
+    public boolean acceptedPayment() {
+        return this.validPay;
     }
 }

@@ -3,6 +3,7 @@ package org.dissan.restaurant.patterns.behavioral.state.cli;
 import org.dissan.restaurant.beans.api.TableBeanApi;
 import org.dissan.restaurant.cli.utils.OutStream;
 import org.dissan.restaurant.patterns.structural.facade.CustomerOrderFacade;
+import org.dissan.restaurant.patterns.structural.facade.TableDaoException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,15 +12,18 @@ import java.util.Map;
 
 public class OrderCliState extends CliState{
 
-    private CustomerOrderFacade orderController;
+    private final CustomerOrderFacade orderController;
     private TableBeanApi tableBean;
     private Map<Integer, List<String>> itemMap;
 
-    public OrderCliState(CliState cliState, CustomerOrderFacade ctrl) {
+    public OrderCliState(CliState cliState, CustomerOrderFacade facade) {
         super(OrderCliState.class.getSimpleName());
         previousState = cliState;
-        this.orderController = ctrl;
-        this.tableBean = this.orderController.getMenuBean();
+        this.orderController = facade;
+    }
+
+    public void initFacade(String tableName, int customers) throws TableDaoException {
+        this.tableBean = orderController.getTableBean(tableName, customers);
     }
 
     @Override

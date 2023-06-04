@@ -1,18 +1,34 @@
 package org.dissan.restaurant.models;
 
+import org.dissan.restaurant.beans.BeanUtil;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.SimpleFormatter;
 
 public class OrderCheck {
 
     private final Table table;
     private double bill;
-    private List<MealItem> items;
+    private List<MealItem> mealItems;
+    private String dateTime;
 
     public OrderCheck(Table table) {
         this.table = table;
         this.bill = 0.0;
+        this.setDateTime();
     }
 
+    private void setDateTime() {
+        Date date = new Date();
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy::HH:mm");
+        this.dateTime = formatter.format(date);
+    }
+
+    public void setDateTime(String dt){
+        this.dateTime = BeanUtil.goodDate(dt, false);
+    }
 
     public void setBill(double amount){
         this.bill = amount;
@@ -22,15 +38,19 @@ public class OrderCheck {
         return bill;
     }
 
-    public List<MealItem> getItems() {
-        return items;
+    public List<MealItem> getMealItems() {
+        return mealItems;
     }
 
     public Table getTable() {
         return table;
     }
 
-    public void setItems(List<MealItem> currentCart) {
-        this.items = currentCart;
+    public void setMealItems(List<MealItem> currentCart) {
+        this.mealItems = currentCart;
+    }
+
+    public String getDateTime() {
+        return dateTime;
     }
 }

@@ -28,6 +28,7 @@ module Resturant{
     exports org.dissan.restaurant.patterns.behavioral.state.cli.exceptions;
     exports org.dissan.restaurant.patterns.behavioral.observer.subjects;
     exports org.dissan.restaurant.patterns.behavioral.observer;
+    exports org.dissan.restaurant.patterns.structural.facade;
 
 
     opens org.dissan.restaurant.fxml.controllers to javafx.fxml;

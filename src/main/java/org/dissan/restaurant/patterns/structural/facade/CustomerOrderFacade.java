@@ -1,5 +1,6 @@
 package org.dissan.restaurant.patterns.structural.facade;
 
+
 import org.dissan.restaurant.beans.TableBean;
 import org.dissan.restaurant.beans.api.TableBeanApi;
 import org.dissan.restaurant.cli.utils.OutStream;
@@ -11,9 +12,6 @@ import org.dissan.restaurant.patterns.behavioral.observer.TableObserver;
 import org.dissan.restaurant.patterns.behavioral.observer.subjects.ConcreteTableSubject;
 import org.dissan.restaurant.patterns.behavioral.observer.subjects.TableSubject;
 import org.dissan.restaurant.patterns.behavioral.observer.subjects.TableSubjectStates;
-import org.dissan.restaurant.patterns.behavioral.state.cli.CliState;
-import org.dissan.restaurant.patterns.behavioral.state.cli.HomeCliState;
-import org.dissan.restaurant.patterns.behavioral.state.cli.OrderCliState;
 import org.dissan.restaurant.patterns.creational.factory.ObserverFactory;
 import org.dissan.restaurant.patterns.creational.factory.TableActor;
 import java.util.List;
@@ -22,57 +20,61 @@ import java.util.Map;
 public class CustomerOrderFacade implements CustomerOrderApi {
     private final TableBean tableBean;
     private final OrderController orderController;
-    private CliState currentState;
-    private final TableSubject subject;
+    private TableSubject subject = null;
     private TableObserver observer;
 
-    public CustomerOrderFacade(CliState cliState) {
-        this.currentState = new OrderCliState(cliState, this);
-        subject = ConcreteTableSubject.getSubject();
+    public CustomerOrderFacade() {
         orderController = new OrderController();
         this.tableBean = orderController.getTableBean();
     }
-
-
 
     private void pullItems(){
         this.tableBean.setMealItem(MealItemDao.pullMenuItems());
     }
 
     public TableBean getMenuBean() {
-        return null;
+        return tableBean;
     }
 
     @Override
     public String printFreeTables(){
         StringBuilder builder = new StringBuilder();
         for (String s:
-        subject.getFreeTables()) {
+        TableSubject.getFreeTables()) {
             builder.append(s).append('\n');
         }
         return builder.toString();
     }
 
-    public TableBean newCustomers(String tableName, int clients) throws TableDaoException {
-        if (!this.subject.getFreeTables().contains(tableName)){
+    //TODO DOWNLOAD TABLE HERE FOR SUBJECT SELECTION
+    private TableBean newCustomers(String tableName, int clients) throws TableDaoException {
+        if (!TableSubject.getFreeTables().contains(tableName)){
             throw new TableDaoException(tableName + " occupied or not exist");
         }
-        Table table = new Table(tableName, clients);
-        this.orderController.setTable(table);
-        this.observer = ObserverFactory.getInstance(TableActor.CUSTOMER);
-        this.subject.attach(table, observer);
+        this.subject = ConcreteTableSubject.getSubject(tableName);
+        TableBean bean = subject.getTableBean();
+        this.orderController.setTableBean(bean);
+        bean.getTable().setCustomers(clients);
+        this.observer = ObserverFactory.getInstance(TableActor.CUSTOMER, tableName);
+        this.subject.attach(observer);
         return this.orderController.getTableBean();
     }
 
     public void sendOrder() {
         this.orderController.sendOrder();
-        this.subject.notifyObservers(this.tableBean.getTable(),this.observer, TableSubjectStates.NEW_ORDER);
+        this.subject.notifyObservers(this.observer, TableSubjectStates.NEW_ORDER);
     }
 
     @Override
     public void pay() {
+        if (this.getMenuBean() == null){
+            OutStream.println("bean = null");
+        }
+        if (this.getMenuBean().getTable() == null){
+            OutStream.println("table = null");
+        }
+        this.subject.notifyObservers(this.observer, TableSubjectStates.PAY_REQUEST);
         this.orderController.pay();
-        this.subject.notifyObservers(this.getMenuBean().getTable(), this.observer, TableSubjectStates.PAY_REQUEST);
     }
 
     @Override
@@ -82,7 +84,7 @@ public class CustomerOrderFacade implements CustomerOrderApi {
 
     @Override
     public List<String> getFreeTables() {
-        return null;
+        return TableSubject.getFreeTables();
     }
 
     // TODO: 31/05/23 move this static methods to OrderCliState
@@ -115,24 +117,27 @@ public class CustomerOrderFacade implements CustomerOrderApi {
     }
 
     public static void main(String[] args) throws TableDaoException {
-        HomeCliState homeCliState = new HomeCliState();
-        CustomerOrderApi facade = new CustomerOrderFacade(homeCliState);
+        CustomerOrderApi facade = new CustomerOrderFacade();
         OutStream.print(facade.printFreeTables());
         TableBeanApi tableBean = facade.getTableBean("1", 5);
         OutStream.println(tableBean.getTableInfo());
-        TableObserver cookerObs = ObserverFactory.getInstance(TableActor.COOKER);
-
-        TableSubject sbj = ConcreteTableSubject.getSubject();
-        Table table = sbj.getRelativeTable("1").getTable();
-        sbj.attach(table, cookerObs);
+        TableObserver cookerObs = ObserverFactory.getInstance(TableActor.COOKER, "1");
+        TableObserver waiterObs = ObserverFactory.getInstance(TableActor.ATTENDANT, "1");
+        TableSubject sbj = ConcreteTableSubject.getSubject("1");
+        Table table = sbj.getTableBean().getTable();
+        sbj.attach(cookerObs);
+        sbj.attach(waiterObs);
         printMeals(tableBean);
         tableBean.addItem("1");
         tableBean.addItem("CARBONARA");
-        printMeals(tableBean);
         facade.sendOrder();
+        facade.pay();
 
     }
 
+    public void setUpTable(String tableName, int customerNumber) throws TableDaoException {
+        this.newCustomers(tableName, customerNumber);
+    }
 }
 
 
