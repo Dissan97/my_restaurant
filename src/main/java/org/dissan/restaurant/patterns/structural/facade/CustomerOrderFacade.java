@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CustomerOrderFacade implements CustomerOrderApi {
-    private final TableBean tableBean;
+    private TableBean tableBean;
     private final OrderController orderController;
     private TableSubject subject = null;
     private TableObserver observer;
@@ -57,6 +57,7 @@ public class CustomerOrderFacade implements CustomerOrderApi {
         bean.getTable().setCustomers(clients);
         this.observer = ObserverFactory.getInstance(TableActor.CUSTOMER, tableName);
         this.subject.attach(observer);
+        this.tableBean = bean;
         return this.orderController.getTableBean();
     }
 
@@ -74,12 +75,18 @@ public class CustomerOrderFacade implements CustomerOrderApi {
             OutStream.println("table = null");
         }
         this.subject.notifyObservers(this.observer, TableSubjectStates.PAY_REQUEST);
+        //simulate acceptance...
+        this.tableBean.setValidPay(true);
         this.orderController.pay();
     }
 
     @Override
     public TableBean getTableBean(String tableName, int clients) throws TableDaoException {
         return newCustomers(tableName, clients);
+    }
+
+    public TableBean getTableBean() throws TableDaoException {
+        return this.tableBean;
     }
 
     @Override

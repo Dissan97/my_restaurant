@@ -35,6 +35,26 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
         pullEmployees();
     }
 
+    public ShiftManager(UserBean userBean) throws EmployeeDaoException {
+        this.bean = new ShiftScheduleBean();
+        pullEmployees();
+        pullShifts();
+        Employee employee = null;
+        this.shiftScheduleDao = new ShiftScheduleDao();
+        for (Employee emp:
+             employeeList) {
+            if (emp.getUser().getUsername().equals(userBean.getUsername())){
+                employee = emp;
+                break;
+            }
+        }
+        if (employee == null){
+            throw new EmployeeDaoException("some problem with employee");
+        }
+        EmployeeBean employeeBean = new EmployeeBean(employee);
+        this.bean.setEmployeeBean(employeeBean);
+    }
+
     private void pullShifts() {
         ShiftDao dao = new ShiftDao();
         this.shiftList = dao.getShiftList();
@@ -84,12 +104,13 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
     }
 
     @Override
-    public void getMySchedule(String eCode) {
+    public void getMySchedule() {
         //to implement
         ShiftScheduleDao dao = new ShiftScheduleDao();
         List<ShiftSchedule> shiftScheduleList = dao.pullShiftSchedules();
+        //todo updaet userBean in employeeBean
         shiftScheduleList.removeIf(
-                shiftSchedule -> !shiftSchedule.getEmployeeCode().equals(eCode) && !shiftSchedule.isUpdateRequest()
+                shiftSchedule -> !shiftSchedule.getEmployeeCode().equals(this.bean.getUserBean()) && !shiftSchedule.isUpdateRequest()
         );
 
         this.bean.setShiftScheduleList(shiftScheduleList);

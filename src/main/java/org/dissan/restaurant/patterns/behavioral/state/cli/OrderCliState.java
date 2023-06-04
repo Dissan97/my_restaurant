@@ -22,15 +22,15 @@ public class OrderCliState extends CliState{
         this.orderController = facade;
     }
 
-    public void initFacade(String tableName, int customers) throws TableDaoException {
-        this.tableBean = orderController.getTableBean(tableName, customers);
+    public void initFacade() throws TableDaoException {
+        this.tableBean = this.orderController.getTableBean();
     }
 
     @Override
     public void updateUi() {
         String cmd = getUserInput();
 
-        if (parseCmd(cmd)){
+        if (badParseCmd(cmd)){
             updateUi();
         }
 
@@ -123,6 +123,8 @@ public class OrderCliState extends CliState{
                     return itemInput;
                 }
             }
+        }catch (NullPointerException e){
+            return null;
         }
         return null;
     }
@@ -153,8 +155,11 @@ public class OrderCliState extends CliState{
 
     private void sendOrder() {
         this.orderController.sendOrder();
+        updateUi();
     }
     private void pay() {
+        this.orderController.pay();
+        super.exitProgram();
     }
 
 

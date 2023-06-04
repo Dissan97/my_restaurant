@@ -28,7 +28,7 @@ public class LoginCliState extends CliState{
     public void updateUi() {
             String cmd = super.getUserInput();
 
-            if (super.parseCmd(cmd)) {
+            if (super.badParseCmd(cmd)) {
                 this.updateUi();
                 return;
             }

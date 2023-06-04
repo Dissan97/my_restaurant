@@ -21,6 +21,8 @@ public abstract class CliState {
     protected JSONObject allowedCommands;
     protected String pageName;
     protected CliState previousState;
+
+
     protected CliState() {
         InStream.setInput();
         OutStream.setOutput();
@@ -83,7 +85,7 @@ public abstract class CliState {
      * @param cmd can be passed key or cmd
      * @return true if cmd is valid else false
      */
-    protected boolean parseCmd(String cmd)  {
+    protected boolean badParseCmd(String cmd)  {
         try {
             boolean valid = false;
 

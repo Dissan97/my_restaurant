@@ -12,40 +12,31 @@ import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
-import org.dissan.restaurant.models.Employee;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public abstract class EmployeeHomeCliState extends AccountHomeCliState{
 
-    protected static final String REQUEST_UPDATE  = "request_schedule_update";
-    protected static final String VIEW_SCHEDULES = "view_schedules";
+    protected static final String MANAGE_SCHEDULE = "manage_update";
+
     protected ShiftManagerEmployeeApi shiftManager;
     protected ShiftScheduleBeanEmployeeApi shiftBean;
     protected EmployeeBean employeeBean;
 
     protected EmployeeHomeCliState(String className, @NotNull UserBean userBean) {
         super(className, userBean);
-        addCmd(REQUEST_UPDATE);
-        addCmd(VIEW_SCHEDULES);
+        addCmd(MANAGE_SCHEDULE);
         shiftManager = new ShiftManager();
         shiftBean = shiftManager.getBean();
         LoginController controller = new LoginController();
         this.employeeBean = controller.getEmployeeBean(userBean);
     }
 
-    protected void requestUpdate(){
-        viewSchedules();
-        parseRequestInput(0);
-        this.shiftBean.clean();
-        try {
-            this.shiftBean.insertCommand(ShiftBeanCommand.EMPLOYEE_CODE, this.employeeBean.getCode());
-            this.shiftManager.requestUpdate();
-        } catch (EmployeeDaoException | ShiftDaoException | ShiftScheduleDaoException | ShiftDateException |
-                 BadCommanEntryException e) {
-            outline("update request failed: " + e.getMessage());
-        }
+    protected void manageSchedule() throws EmployeeDaoException {
+        UpdateEmployeeShiftCliState updateEmployeeShift = new UpdateEmployeeShiftCliState(this.pageName, userBean);
+        updateEmployeeShift.previousState = this;
+        updateEmployeeShift.updateUi();
     }
 
     private void parseRequestInput(int op) {
@@ -81,16 +72,6 @@ public abstract class EmployeeHomeCliState extends AccountHomeCliState{
         }
     }
 
-    protected void viewSchedules(){
-        this.shiftManager.getMySchedule(this.employeeBean.getCode());
-        Map<Integer, String> shiftSchedules = this.shiftBean.getMyShiftSchedules();
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<Integer, String> entry:
-             shiftSchedules.entrySet()) {
-            builder.append(entry.getKey()).append(": ").append(entry.getValue()).append('\n');
-        }
-        out(builder.toString());
-    }
 
 
 }

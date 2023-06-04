@@ -34,15 +34,15 @@ public class OrderCheckDao {
      */
     public static void storeCheck(@NotNull OrderCheck orderCheck){
         JSONObject object = new JSONObject();
-        JSONArray array = loadChecksArray();
-        object.put(TABLE_NAME, orderCheck.getTable().getTableCode());
-        object.put(BILL, orderCheck.getBill());
-        object.put(DATE_TIME, orderCheck.getDateTime());
+                JSONArray array = loadChecksArray();
+            object.put(TABLE_NAME, orderCheck.getTable().getTableCode());
+            object.put(BILL, orderCheck.getBill());
+            object.put(DATE_TIME, orderCheck.getDateTime());
 
-        JSONArray mealItems = new JSONArray();
+            JSONArray mealItems = new JSONArray();
 
         for (MealItem mi:
-             orderCheck.getMealItems()) {
+                    orderCheck.getMealItems()) {
             mealItems.put(mi.getName());
         }
 

@@ -1,6 +1,7 @@
 package org.dissan.restaurant.patterns.behavioral.state.cli;
 
 import org.dissan.restaurant.beans.UserBean;
+import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
 import org.dissan.restaurant.models.AbstractUser;
 import org.dissan.restaurant.models.dao.user.UserDao;
 
@@ -14,7 +15,7 @@ public class AttendantHomeCliState extends EmployeeHomeCliState {
     public void updateUi() {
         String cmd = super.getUserInput();
 
-        if (super.parseCmd(cmd)) {
+        if (super.badParseCmd(cmd)) {
             this.updateUi();
             return;
         }
@@ -43,13 +44,13 @@ public class AttendantHomeCliState extends EmployeeHomeCliState {
             case "6":
                 showAccountInfo();
                 break;
-            case REQUEST_UPDATE:
+            case MANAGE_SCHEDULE:
             case "7":
-                requestUpdate();
-                break;
-            case VIEW_SCHEDULES:
-            case "8":
-                viewSchedules();
+                try {
+                    manageSchedule();
+                } catch (EmployeeDaoException e) {
+                    outline(e.getMessage());
+                }
                 break;
             default:
                 logger.warning("Something wrong");

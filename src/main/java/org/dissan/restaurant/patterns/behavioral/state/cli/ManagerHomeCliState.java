@@ -31,7 +31,7 @@ public class ManagerHomeCliState extends AccountHomeCliState{
     public void updateUi() {
         String cmd = super.getUserInput();
 
-        if (super.parseCmd(cmd)) {
+        if (super.badParseCmd(cmd)) {
             this.updateUi();
             return;
         }

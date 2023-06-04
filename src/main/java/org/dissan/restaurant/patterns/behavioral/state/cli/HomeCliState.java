@@ -15,7 +15,7 @@ public class HomeCliState extends CliState{
     @Override
     public void updateUi() {
         String cmd = super.getUserInput();
-        if (parseCmd(cmd)){
+        if (badParseCmd(cmd)){
             updateUi();
         }
         CliState state;
@@ -65,6 +65,11 @@ public class HomeCliState extends CliState{
         List<String> freeTables = facade.getFreeTables();
         printTables(freeTables);
         parseTableCmd(facade);
+        try {
+            orderCliState.initFacade();
+        } catch (TableDaoException e) {
+            outline(e.getMessage());
+        }
         orderCliState.updateUi();
 
     }

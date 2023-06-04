@@ -13,6 +13,8 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
     private List<ShiftSchedule> shiftScheduleList;
     private List<Shift> shiftList;
     private final EnumMap<ShiftBeanCommand, String> viewEntries = new EnumMap<>(ShiftBeanCommand.class);
+    private UserBean userBean;
+    private EmployeeBean employeeBean;
 
 
     public void setUpdateRequestList(List<ShiftSchedule> ssl) {
@@ -68,6 +70,7 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
         this.viewEntries.clear();
     }
 
+
     @Override
     public String getShiftInfo() {
         StringBuilder builder = new StringBuilder();
@@ -92,6 +95,10 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
         return mySchedules;
     }
 
+    public UserBean getUserBean() {
+        return userBean;
+    }
+
     public void setShiftScheduleList(List<ShiftSchedule> schedules) {
         this.shiftScheduleList = schedules;
     }
@@ -100,5 +107,11 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
         return this.viewEntries.get(command);
     }
 
+    public EmployeeBean getEmployeeBean() {
+        return employeeBean;
+    }
 
+    public void setEmployeeBean(EmployeeBean empBean) {
+        this.employeeBean = empBean;
+    }
 }

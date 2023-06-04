@@ -1,7 +1,7 @@
 package org.dissan.restaurant.controllers.api;
 
+import org.dissan.restaurant.beans.EmployeeBean;
 import org.dissan.restaurant.beans.ShiftScheduleBean;
-import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
@@ -13,6 +13,6 @@ import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
  */
 public interface ShiftManagerEmployeeApi {
     void requestUpdate() throws EmployeeDaoException, ShiftDaoException, ShiftScheduleDaoException, ShiftDateException;
-    void getMySchedule(String eCode);
+    void getMySchedule();
     ShiftScheduleBean getBean();
 }

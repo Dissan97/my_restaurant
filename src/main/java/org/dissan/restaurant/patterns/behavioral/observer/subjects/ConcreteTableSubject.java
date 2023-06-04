@@ -14,6 +14,7 @@ public class ConcreteTableSubject extends TableSubject{
         this.observerList = new ArrayList<>();
         tableBean = new TableBean();
         tableBean.setTable(freeTables.get(tableName));
+        int i = 0;
     }
 
 
