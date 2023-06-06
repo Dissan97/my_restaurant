@@ -1,6 +1,26 @@
-{
-  "12345": ["Attendant task", "ATTENDANT", 800.0],
-  "12346": ["Senior Attendant task", "ATTENDANT", 1200.0],
-  "12347": ["Cooker", "COOKER", 1400.0],
-  "12348": ["Chief", "COOKER", 1800.0]
-}
+[
+  {
+    "code": "12345",
+    "task": "Attendant task",
+    "role": "ATTENDANT",
+    "salary": 800.0
+  },
+  {
+    "code": "12346",
+    "task": "Senior Attendant task",
+    "role": "ATTENDANT",
+    "salary": 1200.0
+  },
+  {
+    "code": "12345",
+    "task": "Cooker",
+    "role": "COOKER",
+    "salary": 1400.0
+  },
+  {
+    "code": "12345",
+    "task": "Chief",
+    "role": "COOKER",
+    "salary": 2400.0
+  }
+]

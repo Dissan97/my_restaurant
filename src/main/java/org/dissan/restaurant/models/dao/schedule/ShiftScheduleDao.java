@@ -16,7 +16,10 @@ import java.util.List;
 public class ShiftScheduleDao {
 
     private boolean local;
-
+    protected static final  String SHIFT = "shift";
+    protected static final  String EMPLOYEE_CODE = "employeeCode";
+    protected static final  String SHIFT_DATE = "shiftDate";
+    protected static final String UPDATE_REQUEST = "updateRequest";
 
     public ShiftScheduleDao(boolean lcl) {
         this.local = lcl;
@@ -26,16 +29,16 @@ public class ShiftScheduleDao {
         this(true);
     }
 
-    public void update(@NotNull ShiftSchedule schedule) {
-        //to implement
+    public void update(@NotNull ShiftSchedule schedule) throws ShiftScheduleDaoException{
+
     }
 
     public void pushShiftSchedule(@NotNull ShiftSchedule schedule) throws ShiftScheduleDaoException {
         JSONObject object = new JSONObject();
-        object.put(ShiftScheduleDaoFs.SHIFT, schedule.getShiftCode());
-        object.put(ShiftScheduleDaoFs.EMPLOYEE_CODE, schedule.getEmployeeCode());
-        object.put(ShiftScheduleDaoFs.SHIFT_DATE, schedule.getShiftDate());
-        object.put(ShiftScheduleDaoFs.UPDATE_REQUEST, schedule.isUpdateRequest());
+        object.put(SHIFT, schedule.getShiftCode());
+        object.put(EMPLOYEE_CODE, schedule.getEmployeeCode());
+        object.put(SHIFT_DATE, schedule.getShiftDate());
+        object.put(UPDATE_REQUEST, schedule.isUpdateRequest());
         ShiftScheduleDaoFs.pushSchedule(object);
     }
 
@@ -48,15 +51,13 @@ public class ShiftScheduleDao {
             array = ShiftScheduleDaoDb.pullShiftSchedules();
         }
 
-
-
         if (array != null) {
             for (int i = 0; i < array.length(); i++) {
                 JSONObject object = array.getJSONObject(i);
-                String shift = object.getString(ShiftScheduleDaoFs.SHIFT);
-                String employeeCode = object.getString(ShiftScheduleDaoFs.EMPLOYEE_CODE);
-                String shiftDate = object.getString(ShiftScheduleDaoFs.SHIFT_DATE);
-                boolean updateRequest = object.getBoolean(ShiftScheduleDaoFs.UPDATE_REQUEST);
+                String shift = object.getString(SHIFT);
+                String employeeCode = object.getString(EMPLOYEE_CODE);
+                String shiftDate = object.getString(SHIFT_DATE);
+                boolean updateRequest = object.getBoolean(UPDATE_REQUEST);
                 ShiftSchedule schedule = fillSchedule(shift, employeeCode, shiftDate, updateRequest);
                 shiftScheduleList.add(schedule);
             }
@@ -89,10 +90,10 @@ public class ShiftScheduleDao {
         }
 
         if (object != null){
-            String shift = object.getString(ShiftScheduleDaoFs.SHIFT);
-            String employeeCode = object.getString(ShiftScheduleDaoFs.EMPLOYEE_CODE);
-            String shiftDate = object.getString(ShiftScheduleDaoFs.SHIFT_DATE);
-            boolean updateRequest = object.getBoolean(ShiftScheduleDaoFs.UPDATE_REQUEST);
+            String shift = object.getString(SHIFT);
+            String employeeCode = object.getString(EMPLOYEE_CODE);
+            String shiftDate = object.getString(SHIFT_DATE);
+            boolean updateRequest = object.getBoolean(UPDATE_REQUEST);
             schedule = this.fillSchedule(shift, employeeCode, shiftDate, updateRequest);
         }
 

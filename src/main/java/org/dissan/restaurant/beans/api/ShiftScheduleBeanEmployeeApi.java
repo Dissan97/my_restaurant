@@ -12,5 +12,5 @@ public interface ShiftScheduleBeanEmployeeApi {
     String getShiftInfo();
     Map<Integer,String> getMyShiftSchedules();
     void clean();
-
+    void setShift(int shiftChoose);
 }

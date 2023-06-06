@@ -7,6 +7,8 @@ import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.controllers.exceptions.UserAlreadyExistException;
 import org.dissan.restaurant.controllers.exceptions.UserCredentialException;
 import org.dissan.restaurant.controllers.exceptions.UserNotFoundException;
+import org.dissan.restaurant.controllers.util.DBMS;
+import org.dissan.restaurant.controllers.util.DBMSException;
 import org.dissan.restaurant.controllers.util.HashUtil;
 import org.dissan.restaurant.models.AbstractUser;
 import org.dissan.restaurant.models.ConcreteUser;
@@ -20,6 +22,8 @@ public class LoginController {
     private final UserBean userBean;
     private AbstractUser user;
     private UserDao dao;
+    private boolean local = true;
+
     public LoginController() {
         this.userBean = new UserBean();
         this.setDao(new UserDao());
@@ -32,6 +36,7 @@ public class LoginController {
     }
 
     private void checkUser(String username) throws UserNotFoundException {
+        this.dao.setLocal(this.local);
         AbstractUser userInfo = this.dao.getUserByUsername(username);
         if (userInfo == null){
             throw new UserNotFoundException(username + " does not exist");
@@ -88,5 +93,10 @@ public class LoginController {
             }
         }
         return employeeBean;
+    }
+
+    public void setLocal(boolean lcl) throws DBMSException {
+        DBMS.setActualRole("LOGIN");
+        this.local = lcl;
     }
 }

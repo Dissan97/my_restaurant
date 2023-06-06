@@ -1,9 +1,11 @@
 package org.dissan.restaurant.models.dao.shift;
 
+import org.dissan.restaurant.controllers.util.DBMSException;
 import org.dissan.restaurant.models.Shift;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -18,7 +20,10 @@ public class ShiftDao {
 
     //variable to switch between local and dbms
     private boolean local = true;
-
+    protected static final String CODE = "code";
+    protected static final String TASK = "task";
+    protected static final String ROLE = "role";
+    protected static final String SALARY = "salary";
     public ShiftDao(boolean lcl) {
         this.local = lcl;
     }
@@ -32,21 +37,27 @@ public class ShiftDao {
      * @return List<Shift> loaded from persistence layer
      */
     public List<Shift> getShiftList(){
-        JSONObject object;
+        JSONArray array = null;
         List<Shift> shiftList = new ArrayList<>();
         if (local){
-            object = ShiftDaoFs.getShiftList();
+            array = ShiftDaoFs.getShiftList();
         }else {
-            ShiftDaoDb.init();
-            object = ShiftDaoDb.getShiftList();
+            //ShiftDaoDb.init();
+            try {
+                array = ShiftDaoDb.getShiftList();
+            } catch (SQLException | ClassNotFoundException | DBMSException e) {
+                //todo adjust this
+            }
         }
 
-        if (object != null) {
-            Set<String> keySet = object.keySet();
-            for (String k :
-                    keySet) {
-                JSONArray array = object.getJSONArray(k);
-                shiftList.add(new Shift(k, array.getString(0), array.getString(1)));
+        if (array != null) {
+            for (int i = 0;  i < array.length(); i++) {
+                JSONObject object = array.getJSONObject(i);
+                String code = object.getString(CODE);
+                String task = object.getString(TASK);
+                String role = object.getString(ROLE);
+                double salary = object.getDouble(SALARY);
+                shiftList.add(new Shift(code, task, role, salary));
             }
         }
         return shiftList;

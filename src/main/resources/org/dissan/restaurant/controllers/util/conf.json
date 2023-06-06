@@ -1,0 +1,19 @@
+{
+  "LOGIN" : {
+    "username": "LOGIN",
+    "password": "password"
+  },
+  "MANAGER":{
+    "username": "MANAGER",
+    "password": "password"
+  },
+  "ATTENDANT": {
+    "username": "ATTENDANT",
+    "password": "password"
+  },
+  "COOKER": {
+    "username": "COOKER",
+    "password": "password"
+  },
+  "url": "jdbc:mariadb://localhost:3306/my_restaurant"
+}

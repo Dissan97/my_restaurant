@@ -70,6 +70,14 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
         this.viewEntries.clear();
     }
 
+    @Override
+    public void setShift(int shiftChoose) {
+        this.shiftSchedule = this.shiftScheduleList.get(shiftChoose);
+    }
+
+    public ShiftSchedule getShiftSchedule() {
+        return shiftSchedule;
+    }
 
     @Override
     public String getShiftInfo() {

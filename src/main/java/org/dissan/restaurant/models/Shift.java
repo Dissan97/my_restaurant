@@ -5,11 +5,13 @@ public class Shift {
     private String code;
     private String task;
     private String role;
+    private double salary;
 
-    public Shift(String cd, String tsk, String rl) {
+    public Shift(String cd, String tsk, String rl, double slr) {
         this.setCode(cd);
         this.setTask(tsk);
         this.setRole(rl);
+        this.setSalary(slr);
     }
 
     public Shift(String sCode) {
@@ -38,6 +40,10 @@ public class Shift {
 
     public void setRole(String role) {
         this.role = role;
+    }
+
+    public void setSalary(double salary) {
+        this.salary = salary;
     }
 
     @Override

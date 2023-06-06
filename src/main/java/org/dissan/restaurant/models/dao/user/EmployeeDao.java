@@ -1,6 +1,6 @@
 package org.dissan.restaurant.models.dao.user;
 
-import org.dissan.restaurant.cli.utils.OutStream;
+
 import org.dissan.restaurant.models.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

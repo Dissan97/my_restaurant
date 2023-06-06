@@ -34,7 +34,7 @@ public abstract class EmployeeHomeCliState extends AccountHomeCliState{
     }
 
     protected void manageSchedule() throws EmployeeDaoException {
-        UpdateEmployeeShiftCliState updateEmployeeShift = new UpdateEmployeeShiftCliState(this.pageName, userBean);
+        UpdateEmployeeShiftCliState updateEmployeeShift = new UpdateEmployeeShiftCliState(userBean);
         updateEmployeeShift.previousState = this;
         updateEmployeeShift.updateUi();
     }

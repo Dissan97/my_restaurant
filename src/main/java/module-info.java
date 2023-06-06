@@ -5,6 +5,7 @@ module Resturant{
     requires java.logging;
     requires org.json;
     requires java.sql;
+    requires org.mariadb.jdbc;
 
     exports org.dissan.restaurant;
     exports org.dissan.restaurant.beans;
@@ -16,7 +17,6 @@ module Resturant{
     exports org.dissan.restaurant.controllers.util;
     exports org.dissan.restaurant.fxml.controllers;
     exports org.dissan.restaurant.models;
-    exports org.dissan.restaurant.models.dao;
     exports org.dissan.restaurant.models.dao.meal;
     exports org.dissan.restaurant.models.dao.schedule;
     exports org.dissan.restaurant.models.dao.shift;

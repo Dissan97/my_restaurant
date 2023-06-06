@@ -3,32 +3,29 @@ package org.dissan.restaurant.models.dao.user;
 import org.dissan.restaurant.controllers.exceptions.UserAlreadyExistException;
 import org.dissan.restaurant.models.AbstractUser;
 import org.dissan.restaurant.models.ConcreteUser;
-import org.dissan.restaurant.models.UserRole;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import java.io.IOException;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 public class UserDao {
     private boolean local = true;
-    private static final String USERNAME = "username";
-    private static final String PASSWORD = "password";
-    private static final String NAME = "name";
-    private static final String SURNAME = "surname";
-    private static final String CITY_OF_BIRTH = "cityOfBirth";
-    private static final String DATE_OF_BIRTH = "dateOfBirth";
-    private static final String ROLE = "role";
+    protected static final String USERNAME = "username";
+    protected static final String PASSWORD = "password";
+    protected static final String NAME = "name";
+    protected static final String SURNAME = "surname";
+    protected static final String CITY_OF_BIRTH = "cityOfBirth";
+    protected static final String DATE_OF_BIRTH = "dateOfBirth";
+    protected static final String ROLE = "role";
     public AbstractUser getUserByUsername(String uName){
         JSONObject object;
         //Choosing to which persistence model get from my data
         if (this.isLocal()) {
             object = UserDaoFs.getUserByUserName(uName);
         } else {
-            object = UserDaoDb.getUserByUserName(uName);
+            object = UserDaoDb.getUserByUsername(uName);
         }
         if (object == null){
             return null;
@@ -38,9 +35,6 @@ public class UserDao {
     }
 
     private @NotNull AbstractUser buildUser(@NotNull JSONObject object){
-        int i = 0;
-        int b = 0;
-
         String usr = object.getString(USERNAME);
         String pwd = object.getString(PASSWORD);
         String nm = object.getString(NAME);

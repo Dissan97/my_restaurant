@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class Controller ->
+ * Class Controller -> (Use cases : {Assign Shift, )
  *     information expert {Employee, Shift, ShiftSchedule, EmployeeDao, ShiftDao, ShiftScheduleDao}
  */
 
@@ -65,7 +65,8 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
     }
 
     /**
-     *
+     * use case assign shift to an employee data are collected from the ShiftBean, they are parsed
+     * then stored in persistence.
      * @throws EmployeeDaoException When an employee does not exist
      * @throws ShiftDaoException When a shift does not exist
      * @throws ShiftDateException When is passed a bad date for the context
@@ -92,50 +93,54 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
         dao.pushShiftSchedule(shiftSchedule);
     }
 
-    public void requestUpdate() throws EmployeeDaoException, ShiftDaoException, ShiftScheduleDaoException, ShiftDateException {
-        String sCode = this.bean.getRelativeEntry(ShiftBeanCommand.SHIFT_CODE);
-        String eCode = this.bean.getRelativeEntry(ShiftBeanCommand.EMPLOYEE_CODE);
-        String dateTime = this.bean.getRelativeEntry(ShiftBeanCommand.DATE_TIME);
-        controlEmployee(eCode);
-        controlShift(sCode);
-	    ShiftSchedule schedule = this.getRelativeShiftSchedule(sCode, eCode, dateTime);
-	    schedule.setShiftDate(dateTime);
+
+    @Override
+    public void requestUpdate() throws ShiftScheduleDaoException {
+        ShiftSchedule schedule = this.bean.getShiftSchedule();
 	    shiftScheduleDao.update(schedule);
     }
 
+    /**
+     * function that collect data from database and update schedules foreach employee
+     */
     @Override
     public void getMySchedule() {
         //to implement
         ShiftScheduleDao dao = new ShiftScheduleDao();
         List<ShiftSchedule> shiftScheduleList = dao.pullShiftSchedules();
-        //todo updaet userBean in employeeBean
+
         shiftScheduleList.removeIf(
-                shiftSchedule -> !shiftSchedule.getEmployeeCode().equals(this.bean.getUserBean()) && !shiftSchedule.isUpdateRequest()
+                shiftSchedule ->
+                {
+                    //remove not employee schedule
+                    boolean employeeCode = !shiftSchedule.getEmployeeCode().equals(this.bean.getEmployeeBean().getCode());
+                    //remove bad shift date -> before this day or day before the method call
+                    boolean employeeDate = BeanUtil.goodDate(shiftSchedule.getShiftDate(), true) == null && !shiftSchedule.isUpdateRequest();
+                    return employeeCode || employeeDate;
+                }
         );
 
         this.bean.setShiftScheduleList(shiftScheduleList);
     }
 
-    public void acceptRequest(String sCode, String eCode, String dt){
+    
+    public void acceptRequest() throws ShiftScheduleDaoException {
         //to implement
+        ShiftSchedule schedule = this.bean.getShiftSchedule();
+        schedule.setUpdate(false);
+        this.shiftScheduleDao.update(schedule);
     }
+
+    /**
+     * getting update request shift from shift list and then updating the relative bean
+     */
 
     public void getUpdateRequest(){
-	    List<ShiftSchedule> shiftScheduleList;
-	    shiftScheduleList = shiftScheduleDao.getShiftUpdateRequest();
-	    if (!shiftScheduleList.isEmpty()){
-	    	this.bean.setUpdateRequestList(shiftScheduleList);
-	    }
+	    List<ShiftSchedule> shiftScheduleList = shiftScheduleDao.pullShiftSchedules();
+        shiftScheduleList.removeIf(schedule -> !schedule.isUpdateRequest() || BeanUtil.goodDate(schedule.getShiftDate(), true) == null);
+        this.bean.setUpdateRequestList(shiftScheduleList);
     }
 
-    private @NotNull ShiftSchedule getRelativeShiftSchedule(String sCode, String eCode, String dateTime) throws ShiftScheduleDaoException {
-        ShiftSchedule schedule = null;
-        schedule = this.shiftScheduleDao.getShiftByKey(sCode, eCode, dateTime);
-        if (schedule == null){
-            throw new ShiftScheduleDaoException("shift already exist");
-        }
-        return schedule;
-    }
 
     private @NotNull Shift controlShift(String sCode) throws ShiftDaoException {
         for (Shift sft:
