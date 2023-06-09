@@ -11,6 +11,6 @@ public interface ShiftScheduleBeanEmployeeApi {
     void insertCommand(@NotNull ShiftBeanCommand command, String entry) throws BadCommanEntryException;
     String getShiftInfo();
     Map<Integer,String> getMyShiftSchedules();
-    void clean();
     void setShift(int shiftChoose);
+
 }

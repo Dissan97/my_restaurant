@@ -13,7 +13,6 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
     private List<ShiftSchedule> shiftScheduleList;
     private List<Shift> shiftList;
     private final EnumMap<ShiftBeanCommand, String> viewEntries = new EnumMap<>(ShiftBeanCommand.class);
-    private UserBean userBean;
     private EmployeeBean employeeBean;
 
 
@@ -26,24 +25,60 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
     }
 
 
-    public List<ShiftSchedule> getShiftScheduleList() {
-        return shiftScheduleList;
-    }
 
     @Override
     public String getAllShiftSchedules() {
-        return this.shiftSchedule.toString();
+        if (this.shiftScheduleList != null){
+
+            StringBuilder builder = new StringBuilder();
+
+            int i;
+
+            for (i = 0; i < shiftScheduleList.size() - 1; i++) {
+                builder.append('[').append(i).append("]: ").append(shiftScheduleList.get(i).toString()).append('\n');
+            }
+
+            builder.append('[').append(i).append("]: ").append(shiftScheduleList.get(i).toString());
+
+            return builder.toString();
+        }
+
+        return null;
+    }
+
+    @Override
+    public List<String> getShiftSchedules() {
+        List<String> scheduleList = new ArrayList<>();
+        if (this.shiftScheduleList != null) {
+            for (ShiftSchedule ss :
+                    this.shiftScheduleList) {
+                scheduleList.add(ss.toString());
+            }
+        }
+        return scheduleList;
     }
 
     @Override
     public List<String> getShifts() {
         List<String> stringList = new ArrayList<>();
         for (Shift s:
-             shiftList) {
+                shiftList) {
             stringList.add("code: " + s.getCode() + " task: " + s.getTask());
         }
 
         return stringList;
+    }
+
+    @Override
+    public List<String> getUpdateShiftSchedules() {
+        List<String> updateList = new ArrayList<>();
+        for (ShiftSchedule ss:
+             shiftScheduleList) {
+            updateList.add("code>>" + ss.getShiftCode() + ";employee>>" + ss.getEmployeeCode() + ";shiftDate>>"
+            + ss.getShiftDate() + ";new update date>>" + ss.getShiftUpdateDate()
+                    );
+        }
+        return updateList;
     }
 
     @Override
@@ -65,14 +100,22 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
         this.viewEntries.put(command, entry);
     }
 
-    @Override
-    public void clean() {
-        this.viewEntries.clear();
-    }
 
     @Override
     public void setShift(int shiftChoose) {
         this.shiftSchedule = this.shiftScheduleList.get(shiftChoose);
+    }
+
+    @Override
+    public void setShift(String shiftCode){
+        for (ShiftSchedule ss:
+             this.shiftScheduleList) {
+            String codeToCompare = ss.toString();
+            int foo = 0;
+            if (shiftCode.equals(codeToCompare)){
+                this.shiftSchedule = ss;
+            }
+        }
     }
 
     public ShiftSchedule getShiftSchedule() {
@@ -84,7 +127,7 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
         StringBuilder builder = new StringBuilder();
         builder.append("Shift schedules").append('\n');
         for (ShiftSchedule ss:
-             this.shiftScheduleList) {
+                this.shiftScheduleList) {
             builder.append(ss.toString()).append('\n');
         }
         return builder.toString();
@@ -101,10 +144,6 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
         }
 
         return mySchedules;
-    }
-
-    public UserBean getUserBean() {
-        return userBean;
     }
 
     public void setShiftScheduleList(List<ShiftSchedule> schedules) {

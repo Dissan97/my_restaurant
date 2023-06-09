@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
@@ -12,47 +15,74 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dissan.restaurant.fxml.controllers.AssignShiftController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dissan.restaurant.fxml.controllers.AssignShiftGuiController">
     <ToolBar layoutY="-6.0" prefHeight="40.0" prefWidth="1024.0">
-        <Button mnemonicParsing="false" onAction="#back" prefHeight="25.0" prefWidth="30.0" text="&lt;" />
-        <Button mnemonicParsing="false" onAction="#home" prefHeight="25.0" prefWidth="61.0" text="HOME" />
+        <HBox prefHeight="25.0" spacing="25.0">
+            <padding>
+                <Insets bottom="10.0" top="10.0" />
+            </padding>
+            <Label prefHeight="50.0" style="-fx-border-color: grey;" text="ASSIGN SHIFT" textAlignment="CENTER">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </Label>
+            <Button mnemonicParsing="false" onAction="#home" prefHeight="50.0" text="HOME">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+          </Button>
+            <Button mnemonicParsing="false" onAction="#back" prefHeight="50.0" prefWidth="30.0" text="&lt;" />
+            <Button alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#switchPersistence" prefHeight="50.0" text="SWITCH PERSISTENCE">
+                <HBox.margin>
+                    <Insets />
+                </HBox.margin>
+            </Button>
+        </HBox>
     </ToolBar>
-   <Label layoutX="14.0" layoutY="40.0" prefHeight="50.0" style="-fx-border-color: grey;" text="ASSIGN SHIFT" textAlignment="CENTER" />
     <SplitPane dividerPositions="0.3" layoutY="100.0" prefHeight="620.0" prefWidth="1024.0">
         <AnchorPane minHeight="0.0" minWidth="0.0">
             <ScrollPane layoutY="40.0" style="-fx-border-color: grey;">
                 <AnchorPane minHeight="0.0" minWidth="0.0">
-                    <ListView fx:id="shiftScheduleList" prefHeight="573.0" prefWidth="304.0" style="-fx-border-color: grey;"/>
+                    <ListView fx:id="shiftScheduleList" prefHeight="573.0" prefWidth="304.0" style="-fx-border-color: grey;" />
                 </AnchorPane>
             </ScrollPane>
             <HBox prefHeight="40.0" prefWidth="304.0">
-                <Label alignment="CENTER" prefHeight="40.0" prefWidth="209.0" style="-fx-border-color: grey;"
-                       text="SCHEDULES"/>
-                <Button alignment="CENTER" prefHeight="40.0" prefWidth="97.0" style="-fx-border-color: grey;"
-                       text="UPDATE" onAction="#updateShiftSchedule"/>
+                <Label alignment="CENTER" prefHeight="40.0" prefWidth="209.0" style="-fx-border-color: grey;" text="SCHEDULES" />
+                <Button alignment="CENTER" onAction="#updateShiftSchedule" prefHeight="40.0" prefWidth="97.0" style="-fx-border-color: grey;" text="UPDATE" />
             </HBox>
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-            <Label alignment="CENTER" layoutX="203.0" layoutY="125.0" prefHeight="40.0" prefWidth="306.0"
-                   style="-fx-border-color: grey;" text="ASSIGN NEW SCHEDULE"/>
-            <TextArea fx:id="shiftCd" layoutX="181.0" layoutY="200.0" prefHeight="50.0" prefWidth="350.0"
-                      promptText="shift code">
+            <Label alignment="CENTER" layoutX="203.0" layoutY="125.0" prefHeight="40.0" prefWidth="306.0" style="-fx-border-color: grey;" text="ASSIGN NEW SCHEDULE" />
+            <TextArea fx:id="shiftCd" layoutX="181.0" layoutY="200.0" prefHeight="50.0" prefWidth="350.0" promptText="shift code">
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
             </TextArea>
-            <TextArea fx:id="employeeCd" layoutX="181.0" layoutY="270.0" prefHeight="50.0" prefWidth="350.0"
-                      promptText="employee code">
+            <TextArea fx:id="employeeCd" layoutX="181.0" layoutY="270.0" prefHeight="50.0" prefWidth="350.0" promptText="employee code">
                 <font>
-                    <Font size="14.0"/>
+                    <Font size="14.0" />
                 </font>
             </TextArea>
             <HBox layoutX="181.0" layoutY="350.0" prefHeight="50.0" prefWidth="350.0">
-                <Label alignment="CENTER" prefHeight="50.0" prefWidth="117.0" text="schedule date"/>
-                <DatePicker fx:id="date" prefHeight="50.0" prefWidth="262.0"/>
+                <Label alignment="CENTER" prefHeight="50.0" prefWidth="56.0" text="date" />
+                <DatePicker fx:id="datePicker" prefHeight="50.0" prefWidth="147.0" />
+            <MenuButton fx:id="hourMenuButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Hour">
+              <items>
+                <MenuItem mnemonicParsing="false" text="10:30" />
+                <MenuItem mnemonicParsing="false" text="13:30" />
+                  <MenuItem mnemonicParsing="false" text="16:30" />
+              </items>
+            </MenuButton>
+            <Label fx:id="hour" alignment="CENTER" contentDisplay="CENTER" prefHeight="49.0" prefWidth="79.0" textAlignment="CENTER">
+               <HBox.margin>
+                  <Insets />
+               </HBox.margin>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </Label>
             </HBox>
-            <Button layoutX="444.0" layoutY="425.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="87.0"
-                    text="ASSIGN"/>
+            <Button layoutX="444.0" layoutY="425.0" mnemonicParsing="false" onAction="#assignShift" prefHeight="50.0" prefWidth="87.0" text="ASSIGN" />
         </AnchorPane>
     </SplitPane>
 </AnchorPane>

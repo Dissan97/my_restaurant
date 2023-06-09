@@ -20,6 +20,7 @@ public class ShiftScheduleDao {
     protected static final  String EMPLOYEE_CODE = "employeeCode";
     protected static final  String SHIFT_DATE = "shiftDate";
     protected static final String UPDATE_REQUEST = "updateRequest";
+    protected static final String SHIFT_UPDATE_DATE = "shiftUpdateDate";
 
     public ShiftScheduleDao(boolean lcl) {
         this.local = lcl;
@@ -29,8 +30,22 @@ public class ShiftScheduleDao {
         this(true);
     }
 
-    public void update(@NotNull ShiftSchedule schedule) throws ShiftScheduleDaoException{
+    public void update(@NotNull ShiftSchedule schedule, boolean accepted) throws ShiftScheduleDaoException{
+        JSONObject object = new JSONObject();
+        object.put(SHIFT, schedule.getShiftCode());
+        object.put(EMPLOYEE_CODE, schedule.getEmployeeCode());
+        object.put(SHIFT_DATE, schedule.getShiftDate());
+        object.put(UPDATE_REQUEST, schedule.isUpdateRequest());
 
+        if (schedule.getShiftUpdateDate() != null){
+            object.put(SHIFT_UPDATE_DATE, schedule.getShiftUpdateDate());
+        }
+
+        if (local){
+            ShiftScheduleDaoFs.update(object, accepted);
+        }else {
+            ShiftScheduleDaoDb.update(schedule, accepted);
+        }
     }
 
     public void pushShiftSchedule(@NotNull ShiftSchedule schedule) throws ShiftScheduleDaoException {
@@ -59,6 +74,12 @@ public class ShiftScheduleDao {
                 String shiftDate = object.getString(SHIFT_DATE);
                 boolean updateRequest = object.getBoolean(UPDATE_REQUEST);
                 ShiftSchedule schedule = fillSchedule(shift, employeeCode, shiftDate, updateRequest);
+                if (updateRequest && schedule != null) {
+                    if (object.has(SHIFT_UPDATE_DATE)) {
+                        String shiftUpdateDate = object.getString(SHIFT_UPDATE_DATE);
+                        schedule.setShiftUpdateDate(shiftUpdateDate);
+                    }
+                }
                 shiftScheduleList.add(schedule);
             }
         }
@@ -76,10 +97,6 @@ public class ShiftScheduleDao {
         } catch (ShiftDateException e) {
             return null;
         }
-    }
-
-    public List<ShiftSchedule> getShiftUpdateRequest() {
-        return new ArrayList<>();
     }
 
     public ShiftSchedule getShiftByKey(String sCode, String eCode, String dateTime) {
@@ -100,8 +117,6 @@ public class ShiftScheduleDao {
         return schedule;
     }
 
-
-    //todo remove this main
     public static void main(String[] args) throws ShiftDateException, ShiftScheduleDaoException {
         Shift shift = new Shift("12346");
         AbstractUser user = new ConcreteUser();
@@ -110,5 +125,9 @@ public class ShiftScheduleDao {
         ShiftSchedule schedule = new ShiftSchedule(shift, emp, "01-05-2023::10:30");
         ShiftScheduleDao me = new ShiftScheduleDao();
         me.pushShiftSchedule(schedule);
+    }
+
+    public void switchPersistence() {
+        this.local = !local;
     }
 }

@@ -94,11 +94,10 @@ public class ShiftScheduleDaoFs {
     }
 
     public static void pushSchedule(JSONObject object) throws ShiftScheduleDaoException{
-        pushSchedule(object, false);
+        pushSchedule(object, false, false);
     }
 
-    public static void pushSchedule(@NotNull JSONObject object, boolean update) throws ShiftScheduleDaoException {
-        loadSchedules();
+    public static void pushSchedule(@NotNull JSONObject object, boolean update, boolean accepted) throws ShiftScheduleDaoException {
 
         String sCode = object.getString(ShiftScheduleDao.SHIFT);
         String eCode = object.getString(ShiftScheduleDao.EMPLOYEE_CODE);
@@ -107,10 +106,14 @@ public class ShiftScheduleDaoFs {
 
 
         if (ShiftScheduleDaoFs.pullSchedule(sCode, eCode, date) != null) {
-            if (!update) {
-                throw new ShiftScheduleDaoException("Shift schedule exist");
+            if (update) {
+                removeObject(sCode, eCode, date);
+                if (accepted){
+                    object.remove(ShiftScheduleDao.SHIFT_DATE);
+                    object.put(ShiftScheduleDao.SHIFT_DATE, object.get(ShiftScheduleDao.SHIFT_UPDATE_DATE));
+                    object.remove(ShiftScheduleDao.SHIFT_UPDATE_DATE);
+                }
             }
-            removeObject(sCode, eCode, date);
         }
 
         LOCAL_CACHE.put(LOCAL_CACHE.size(), object);
@@ -152,4 +155,7 @@ public class ShiftScheduleDaoFs {
     }
 
 
+    public static void update(JSONObject object, boolean accepted) throws ShiftScheduleDaoException {
+        pushSchedule(object, true, accepted);
+    }
 }

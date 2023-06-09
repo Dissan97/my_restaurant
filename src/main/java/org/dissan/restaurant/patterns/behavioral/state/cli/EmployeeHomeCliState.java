@@ -9,8 +9,6 @@ import org.dissan.restaurant.controllers.LoginController;
 import org.dissan.restaurant.controllers.ShiftManager;
 import org.dissan.restaurant.controllers.api.ShiftManagerEmployeeApi;
 import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
-import org.dissan.restaurant.controllers.exceptions.ShiftDaoException;
-import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,6 +22,7 @@ public abstract class EmployeeHomeCliState extends AccountHomeCliState{
     protected ShiftScheduleBeanEmployeeApi shiftBean;
     protected EmployeeBean employeeBean;
 
+    protected static final String REQUEST_UPDATE = "request_update";
     protected EmployeeHomeCliState(String className, @NotNull UserBean userBean) {
         super(className, userBean);
         addCmd(MANAGE_SCHEDULE);
@@ -31,6 +30,7 @@ public abstract class EmployeeHomeCliState extends AccountHomeCliState{
         shiftBean = shiftManager.getBean();
         LoginController controller = new LoginController();
         this.employeeBean = controller.getEmployeeBean(userBean);
+        this.addCmd(REQUEST_UPDATE);
     }
 
     protected void manageSchedule() throws EmployeeDaoException {
@@ -39,7 +39,7 @@ public abstract class EmployeeHomeCliState extends AccountHomeCliState{
         updateEmployeeShift.updateUi();
     }
 
-    private void parseRequestInput(int op) {
+    protected void parseRequestInput(int op) {
         String entry;
         String message;
         ShiftBeanCommand command;

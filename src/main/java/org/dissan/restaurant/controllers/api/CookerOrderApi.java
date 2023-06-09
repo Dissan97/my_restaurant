@@ -1,5 +1,5 @@
 package org.dissan.restaurant.controllers.api;
 
-public interface CookerOrderApi {
+public interface CookerOrderApi extends OrderEmployeeApi {
     void setOrderReady();
 }

@@ -71,7 +71,7 @@ public class BeanUtil {
         calendar.add(Calendar.WEEK_OF_YEAR, 1);
         controlDate = calendar.getTime();
         //this will be thrown when is passed a day after a week
-        control &= date.after(controlDate);
+        control |= date.after(controlDate);
         if (control){
             return null;
         }

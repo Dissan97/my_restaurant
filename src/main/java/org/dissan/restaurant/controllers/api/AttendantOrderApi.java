@@ -1,7 +1,6 @@
 package org.dissan.restaurant.controllers.api;
 
-public interface AttendantOrderApi {
-    void isThereDelivery();
+public interface AttendantOrderApi extends OrderEmployeeApi {
     void setDelivered();
     void checkBill();
 }

@@ -6,11 +6,14 @@ import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
-import org.dissan.restaurant.models.*;
+import org.dissan.restaurant.models.Employee;
+import org.dissan.restaurant.models.Shift;
+import org.dissan.restaurant.models.ShiftSchedule;
 import org.dissan.restaurant.models.dao.schedule.ShiftScheduleDao;
 import org.dissan.restaurant.models.dao.shift.ShiftDao;
 import org.dissan.restaurant.models.dao.user.EmployeeDao;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +100,7 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
     @Override
     public void requestUpdate() throws ShiftScheduleDaoException {
         ShiftSchedule schedule = this.bean.getShiftSchedule();
-	    shiftScheduleDao.update(schedule);
+	    shiftScheduleDao.update(schedule, false);
     }
 
     /**
@@ -124,11 +127,10 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
     }
 
     
-    public void acceptRequest() throws ShiftScheduleDaoException {
+    public void manageRequest(boolean accepted) throws ShiftScheduleDaoException {
         //to implement
         ShiftSchedule schedule = this.bean.getShiftSchedule();
-        schedule.setUpdate(false);
-        this.shiftScheduleDao.update(schedule);
+        this.shiftScheduleDao.update(schedule, accepted);
     }
 
     /**
@@ -137,7 +139,11 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
 
     public void getUpdateRequest(){
 	    List<ShiftSchedule> shiftScheduleList = shiftScheduleDao.pullShiftSchedules();
-        shiftScheduleList.removeIf(schedule -> !schedule.isUpdateRequest() || BeanUtil.goodDate(schedule.getShiftDate(), true) == null);
+        //removing schedule that does not have update request or has updated but does not have updateDate.
+        shiftScheduleList.removeIf(schedule ->
+                 BeanUtil.goodDate(schedule.getShiftDate(), true) == null ||
+                        !(schedule.isUpdateRequest() || schedule.getShiftUpdateDate() != null )
+        );
         this.bean.setUpdateRequestList(shiftScheduleList);
     }
 
@@ -163,37 +169,19 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
     }
 
     public void pullSchedules(){
-        if (controlSchedules()) {
-            List<ShiftSchedule> schedules = this.shiftScheduleDao.pullShiftSchedules();
-            this.bean.setShiftScheduleList(schedules);
-        }
+        List<ShiftSchedule> scheduleList = this.shiftScheduleDao.pullShiftSchedules();
+        this.bean.setShiftScheduleList(scheduleList);
     }
 
-    private boolean controlSchedules() {
-        List<ShiftSchedule> schedules = this.bean.getShiftScheduleList();
-        if (schedules == null){
-            return false;
-        }
-
-        if (schedules.isEmpty()){
-            return false;
-        }
-
-        for (ShiftSchedule s:
-             schedules) {
-            if (BeanUtil.goodDate(s.getShiftDate(), true) == null){
-                return false;
-            }
-        }
-        return true;
-    }
 
     @Override
     public ShiftScheduleBean getBean() {
         return this.bean;
     }
 
-
-
+    @Override
+    public void switchPersistence() {
+        this.shiftScheduleDao.switchPersistence();
+    }
 
 }

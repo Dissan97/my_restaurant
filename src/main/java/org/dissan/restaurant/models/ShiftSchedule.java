@@ -8,6 +8,7 @@ public class ShiftSchedule{
     private final Employee employee;
     private String shiftDate;
     private boolean updateRequest;
+    private String shiftUpdateDate;
 
     public ShiftSchedule(Shift sft, Employee emp, String dTime) throws ShiftDateException {
         this(sft, emp, dTime, false);
@@ -17,6 +18,7 @@ public class ShiftSchedule{
         this.shift = sft;
         this.employee = emp;
         this.setShiftDate(dTime);
+        this.setShiftUpdateDate(null);
         this.updateRequest = upRequest;
     }
 
@@ -61,5 +63,19 @@ public class ShiftSchedule{
 
     public boolean isUpdateRequest() {
         return this.updateRequest;
+    }
+
+    public String getShiftUpdateDate() {
+        return shiftUpdateDate;
+    }
+
+    public void setShiftUpdateDate(String shiftUpdateDate) {
+        if (shiftUpdateDate != null){
+            if (updateRequest){
+                this.shiftUpdateDate = BeanUtil.goodDate(shiftUpdateDate, true);
+                return;
+            }
+        }
+        this.shiftUpdateDate = shiftUpdateDate;
     }
 }

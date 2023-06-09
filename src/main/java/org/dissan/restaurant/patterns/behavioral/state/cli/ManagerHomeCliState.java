@@ -51,9 +51,12 @@ public class ManagerHomeCliState extends AccountHomeCliState{
                 break;
             case "view_requests:":
             case "4":
+                viewRequests();
+                updateUi();
                 break;
             case "accept_request":
             case "5":
+                acceptRequest();
                 break;
             case "help":
             case "6":
@@ -61,16 +64,51 @@ public class ManagerHomeCliState extends AccountHomeCliState{
                 break;
             case "exit":
             case "7":
+                exitProgram();
                 break;
             case "account":
             case "8":
                 showAccountInfo();
+                break;
+            case "switch_persistence":
+            case "9":
+                switchPersistence();
                 break;
             default:
                 logger.warning("Something wrong");
                 updateUi();
                 break;
         }
+    }
+
+    private void acceptRequest() {
+        viewRequests();
+        if (this.scheduleBean.getAllShiftSchedules() != null){
+            String chosenShift = getUserInput("Choose a schedule");
+            try {
+                int index = Integer.parseInt(chosenShift);
+                this.scheduleBean.setShift(index);
+                this.shiftManager.manageRequest(true);
+
+            }catch (NumberFormatException e){
+                outline(e.getMessage());
+                String entry = getUserInput("acceptRequest: continue ? y - n");
+                if (entry.equalsIgnoreCase("y") || entry.equalsIgnoreCase("yes")){
+                    acceptRequest();
+                }
+            } catch (ShiftScheduleDaoException e) {
+                outline("Some error with method shiftManager: " + e.getMessage());
+            }
+            updateUi();
+            return;
+        }
+        outline("no request available");
+        updateUi();
+    }
+
+    private void viewRequests() {
+        this.shiftManager.getUpdateRequest();
+        outline(this.scheduleBean.getAllShiftSchedules());
     }
 
 
@@ -135,7 +173,7 @@ public class ManagerHomeCliState extends AccountHomeCliState{
     private void printShifts() {
         StringBuilder builder = new StringBuilder("\n");
         for (Map.Entry<Integer, String> entry:
-        this.shiftCache.entrySet()) {
+                this.shiftCache.entrySet()) {
             builder.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
         }
         out(builder.toString());
@@ -146,7 +184,7 @@ public class ManagerHomeCliState extends AccountHomeCliState{
         List<String> shifts = this.scheduleBean.getShifts();
         int index = 1;
         for (String s:
-             shifts) {
+                shifts) {
             this.shiftCache.put(index++, s);
         }
     }

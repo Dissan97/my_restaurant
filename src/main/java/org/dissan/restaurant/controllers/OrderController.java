@@ -6,9 +6,14 @@ import org.dissan.restaurant.controllers.api.CookerOrderApi;
 import org.dissan.restaurant.models.MealItem;
 import org.dissan.restaurant.models.OrderCheck;
 import org.dissan.restaurant.models.Table;
+import org.dissan.restaurant.models.UserRole;
 import org.dissan.restaurant.models.dao.check.OrderCheckDao;
 import org.dissan.restaurant.models.dao.meal.MealItemDao;
 import org.dissan.restaurant.patterns.behavioral.observer.TableObserver;
+import org.dissan.restaurant.patterns.behavioral.observer.subjects.ConcreteTableSubject;
+import org.dissan.restaurant.patterns.behavioral.observer.subjects.TableSubject;
+import org.dissan.restaurant.patterns.creational.factory.ObserverFactory;
+import org.dissan.restaurant.patterns.creational.factory.TableActor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -16,12 +21,35 @@ import java.util.List;
 public class OrderController implements  CookerOrderApi, AttendantOrderApi {
 
     private TableBean tableBean;
-    private TableObserver observer;
+    private TableObserver observer = null;
     public OrderController() {
+        this(null, null );
+    }
+
+    public OrderController(String tableName, UserRole role){
         this.tableBean = new TableBean();
+        if (tableName != null && role != null){
+            setObserver(tableName,role);
+        }
         this.tableBean.setMealItem(MealItemDao.pullMenuItems());
     }
 
+    private void setObserver(String tableName ,UserRole role) {
+        TableSubject subject = ConcreteTableSubject.getSubject(tableName);
+        this.tableBean  = getTableBean();
+        TableActor actor = null;
+
+        if (role == UserRole.ATTENDANT){
+            actor = TableActor.ATTENDANT;
+        }
+
+        if (role == UserRole.COOKER){
+            actor = TableActor.COOKER;
+        }
+        assert actor != null;
+        this.observer = ObserverFactory.getInstance(actor, subject.getTableBean().getTableName());
+        subject.attach(observer);
+    }
 
     public void sendOrder() {
         List<MealItem> currentCart = this.tableBean.getCart();
@@ -45,34 +73,6 @@ public class OrderController implements  CookerOrderApi, AttendantOrderApi {
         return tableBean;
     }
 
-    public TableBean getTableBean(String tableName, int clients) {
-        // TODO: 01/06/23 implement for other actors
-        return tableBean;
-    }
-
-    public List<String> getFreeTables() {
-        return null;
-    }
-
-    @Override
-    public void setOrderReady() {
-
-    }
-
-    @Override
-    public void isThereDelivery() {
-
-    }
-
-    @Override
-    public void setDelivered() {
-
-    }
-
-    @Override
-    public void checkBill() {
-
-    }
 
     public void setTable(Table table) {
         OrderCheck orderCheck = new OrderCheck(table);
@@ -86,4 +86,32 @@ public class OrderController implements  CookerOrderApi, AttendantOrderApi {
         OrderCheck orderCheck = new OrderCheck(tableBean.getTable());
         tableBean.setCheck(orderCheck);
     }
+
+    @Override
+    public TableObserver getObserver() {
+        return this.observer;
+    }
+
+    public TableBean getTableBean(String tableName, int clients) {
+        return tableBean;
+    }
+
+
+    @Override
+    public void setOrderReady() {
+
+    }
+
+
+
+    @Override
+    public void setDelivered() {
+
+    }
+
+    @Override
+    public void checkBill() {
+
+    }
+
 }

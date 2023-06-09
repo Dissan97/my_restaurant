@@ -1,4 +1,4 @@
-module Resturant{
+module restaurant {
     requires org.jetbrains.annotations;
     requires javafx.controls;
     requires javafx.fxml;

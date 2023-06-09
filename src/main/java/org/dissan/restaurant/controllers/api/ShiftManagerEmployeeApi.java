@@ -15,4 +15,6 @@ public interface ShiftManagerEmployeeApi {
     void requestUpdate() throws  ShiftScheduleDaoException;
     void getMySchedule();
     ShiftScheduleBean getBean();
+
+    void switchPersistence();
 }

@@ -6,7 +6,6 @@ import org.dissan.restaurant.beans.api.TableBeanApi;
 import org.dissan.restaurant.cli.utils.OutStream;
 import org.dissan.restaurant.controllers.OrderController;
 import org.dissan.restaurant.controllers.api.CustomerOrderApi;
-import org.dissan.restaurant.models.Table;
 import org.dissan.restaurant.models.dao.meal.MealItemDao;
 import org.dissan.restaurant.patterns.behavioral.observer.TableObserver;
 import org.dissan.restaurant.patterns.behavioral.observer.subjects.ConcreteTableSubject;
@@ -80,10 +79,6 @@ public class CustomerOrderFacade implements CustomerOrderApi {
         this.orderController.pay();
     }
 
-    @Override
-    public TableBean getTableBean(String tableName, int clients) throws TableDaoException {
-        return newCustomers(tableName, clients);
-    }
 
     public TableBean getTableBean() throws TableDaoException {
         return this.tableBean;
@@ -121,25 +116,6 @@ public class CustomerOrderFacade implements CustomerOrderApi {
         }
 
         OutStream.print(builder.toString());
-    }
-
-    public static void main(String[] args) throws TableDaoException {
-        CustomerOrderApi facade = new CustomerOrderFacade();
-        OutStream.print(facade.printFreeTables());
-        TableBeanApi tableBean = facade.getTableBean("1", 5);
-        OutStream.println(tableBean.getTableInfo());
-        TableObserver cookerObs = ObserverFactory.getInstance(TableActor.COOKER, "1");
-        TableObserver waiterObs = ObserverFactory.getInstance(TableActor.ATTENDANT, "1");
-        TableSubject sbj = ConcreteTableSubject.getSubject("1");
-        Table table = sbj.getTableBean().getTable();
-        sbj.attach(cookerObs);
-        sbj.attach(waiterObs);
-        printMeals(tableBean);
-        tableBean.addItem("1");
-        tableBean.addItem("CARBONARA");
-        facade.sendOrder();
-        facade.pay();
-
     }
 
     public void setUpTable(String tableName, int customerNumber) throws TableDaoException {

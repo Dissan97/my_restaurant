@@ -18,9 +18,6 @@ public class StateFactory {
             case LOGIN:
                 newState = new LoginCliState(currentState);
                 break;
-            case ASSIGN_SHIFT:
-                newState = new AssignShiftCliState(currentState);
-                break;
             default:
                 throw new CliUiException(UI_MESSAGE);
         }
