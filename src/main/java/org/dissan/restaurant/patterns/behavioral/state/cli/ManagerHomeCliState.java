@@ -37,47 +37,22 @@ public class ManagerHomeCliState extends AccountHomeCliState{
         }
 
         switch (cmd) {
-            case "1":
-            case "assign_shift":
-                assignShift();
-                break;
-            case "get_employee_schedule":
-            case "2":
-                getEmployeesSchedule();
-                break;
-            case "view_schedules":
-            case "3":
-                viewSchedules();
-                break;
-            case "view_requests:":
-            case "4":
+            case "1", "assign_shift" -> assignShift();
+            case "get_employee_schedule", "2" -> getEmployeesSchedule();
+            case "view_schedules", "3" -> viewSchedules();
+            case "view_requests:", "4" -> {
                 viewRequests();
                 updateUi();
-                break;
-            case "accept_request":
-            case "5":
-                acceptRequest();
-                break;
-            case "help":
-            case "6":
-                showHelp();
-                break;
-            case "exit":
-            case "7":
-                exitProgram();
-                break;
-            case "account":
-            case "8":
-                showAccountInfo();
-                break;
-            case "switch_persistence":
-            case "9":
-                switchPersistence();
-                break;
-            default:
+            }
+            case "accept_request", "5" -> acceptRequest();
+            case "help", "6" -> showHelp();
+            case "exit", "7" -> exitProgram();
+            case "account", "8" -> showAccountInfo();
+            case "switch_persistence", "9" -> switchPersistence();
+            default -> {
                 logger.warning("Something wrong");
                 updateUi();
-                break;
+            }
         }
     }
 
@@ -137,21 +112,22 @@ public class ManagerHomeCliState extends AccountHomeCliState{
         String message;
         ShiftBeanCommand command;
         switch (op) {
-            case 0:
+            case 0 -> {
                 printShifts();
                 message = "shift code";
                 command = ShiftBeanCommand.SHIFT_CODE;
-                break;
-            case 1:
+            }
+            case 1 -> {
                 message = "employee code";
                 command = ShiftBeanCommand.EMPLOYEE_CODE;
-                break;
-            case 2:
+            }
+            case 2 -> {
                 message = "shift date";
                 command = ShiftBeanCommand.DATE_TIME;
-                break;
-            default:
+            }
+            default -> {
                 return;
+            }
         }
         entry = getUserInput(message);
 

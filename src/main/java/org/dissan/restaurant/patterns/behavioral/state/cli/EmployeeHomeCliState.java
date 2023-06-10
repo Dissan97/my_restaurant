@@ -9,10 +9,7 @@ import org.dissan.restaurant.controllers.LoginController;
 import org.dissan.restaurant.controllers.ShiftManager;
 import org.dissan.restaurant.controllers.api.ShiftManagerEmployeeApi;
 import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
-import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Map;
 
 public abstract class EmployeeHomeCliState extends AccountHomeCliState{
 
@@ -44,16 +41,17 @@ public abstract class EmployeeHomeCliState extends AccountHomeCliState{
         String message;
         ShiftBeanCommand command;
         switch (op) {
-            case 0:
+            case 0 -> {
                 message = "shift code";
                 command = ShiftBeanCommand.SHIFT_CODE;
-                break;
-            case 1:
+            }
+            case 1 -> {
                 message = "shift date";
                 command = ShiftBeanCommand.EMPLOYEE_CODE;
-                break;
-            default:
+            }
+            default -> {
                 return;
+            }
         }
         entry = getUserInput(message);
 

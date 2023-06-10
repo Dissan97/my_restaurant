@@ -10,7 +10,7 @@ public class CustomerTableObserver extends TableObserver{
 
     @Override
     public void update(TableObserver observer, TableBean tableBean, TableSubjectStates state) {
-
+        //something will be displayed that order is ready
     }
 
 

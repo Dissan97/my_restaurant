@@ -1,11 +1,8 @@
 package org.dissan.restaurant.models;
 
-import org.dissan.restaurant.beans.BeanUtil;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.logging.SimpleFormatter;
 
 public class OrderCheck {
 
@@ -26,9 +23,6 @@ public class OrderCheck {
         this.dateTime = formatter.format(date);
     }
 
-    public void setDateTime(String dt){
-        this.dateTime = BeanUtil.goodDate(dt, false);
-    }
 
     public void setBill(double amount){
         this.bill = amount;

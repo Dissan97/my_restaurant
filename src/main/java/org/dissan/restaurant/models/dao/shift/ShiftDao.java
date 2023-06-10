@@ -8,8 +8,6 @@ import org.json.JSONObject;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
 /**
  * Class Dao (Persistence)
  * Information Expert of {Shift, JSONObject, JsonArray};
@@ -19,7 +17,7 @@ import java.util.Set;
 public class ShiftDao {
 
     //variable to switch between local and dbms
-    private boolean local = true;
+    private final boolean local;
     protected static final String CODE = "code";
     protected static final String TASK = "task";
     protected static final String ROLE = "role";
@@ -42,11 +40,10 @@ public class ShiftDao {
         if (local){
             array = ShiftDaoFs.getShiftList();
         }else {
-            //ShiftDaoDb.init();
             try {
                 array = ShiftDaoDb.getShiftList();
             } catch (SQLException | ClassNotFoundException | DBMSException e) {
-                //todo adjust this
+                //something will happen
             }
         }
 

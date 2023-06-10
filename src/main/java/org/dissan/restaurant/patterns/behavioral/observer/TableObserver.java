@@ -9,11 +9,10 @@ import org.dissan.restaurant.patterns.behavioral.observer.subjects.TableSubjectS
 public abstract class TableObserver {
 
     protected TableSubject tableSubject;
-    public TableObserver(String tableName) {
+    protected TableObserver(String tableName) {
         tableSubject = ConcreteTableSubject.getSubject(tableName);
     }
 
 
-    // TODO: 31/05/23 update the implementation flow
     public abstract void update(TableObserver observer, TableBean tableBean, TableSubjectStates state);
 }

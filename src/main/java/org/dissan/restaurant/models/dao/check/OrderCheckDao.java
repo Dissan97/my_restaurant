@@ -3,13 +3,9 @@ package org.dissan.restaurant.models.dao.check;
 import org.dissan.restaurant.cli.utils.OutStream;
 import org.dissan.restaurant.models.MealItem;
 import org.dissan.restaurant.models.OrderCheck;
-import org.dissan.restaurant.models.Table;
-import org.dissan.restaurant.models.dao.meal.MealItemDao;
-import org.dissan.restaurant.models.dao.table.TableDao;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -17,8 +13,6 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class OrderCheckDao {
@@ -27,6 +21,8 @@ public class OrderCheckDao {
     private static final String BILL = "bill";
     private static final String DATE_TIME = "dateTime";
     private static final String MEAL_ITEMS = "mealItems";
+
+    private OrderCheckDao(){}
 
     /**
      * method to store order check in persistence layer
@@ -69,35 +65,4 @@ public class OrderCheckDao {
         }
     }
 
-    //todo adjust this stuff
-    public static @NotNull List<OrderCheck> loadChecks(){
-        List<OrderCheck> orderCheckList = new ArrayList<>();
-        JSONArray orderCheckArray = loadChecksArray();
-        assert orderCheckArray != null;
-        try {
-            for (int i = 0; i < orderCheckArray.length(); i++) {
-                JSONObject object = orderCheckArray.getJSONObject(i);
-                String tableName = object.getString(TABLE_NAME);
-                double bill = object.getDouble(BILL);
-                String dateTime = object.getString(DATE_TIME);
-                JSONArray mealItemsJArray = object.getJSONArray(MEAL_ITEMS);
-                List<MealItem> mealItemList = new ArrayList<>();
-                for (int j = 0; j < mealItemsJArray.length(); j++){
-                    String itemName = mealItemsJArray.getString(j);
-                    mealItemList.add(MealItemDao.parseMealItemFromJson(Objects.requireNonNull(MealItemDao.parseMealItemToJson(itemName))));
-                }
-                Table table = TableDao.getTableByName(tableName);
-                OrderCheck orderCheck = new OrderCheck(table);
-                orderCheck.setBill(bill);
-                orderCheck.setMealItems(mealItemList);
-                orderCheck.setDateTime(dateTime);
-                orderCheckList.add(orderCheck);
-            }
-
-        } catch (JSONException  e){
-            OutStream.println(e.getMessage());
-        }
-
-        return orderCheckList;
-    }
 }

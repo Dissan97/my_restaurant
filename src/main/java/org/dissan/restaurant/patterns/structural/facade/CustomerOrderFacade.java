@@ -2,11 +2,9 @@ package org.dissan.restaurant.patterns.structural.facade;
 
 
 import org.dissan.restaurant.beans.TableBean;
-import org.dissan.restaurant.beans.api.TableBeanApi;
 import org.dissan.restaurant.cli.utils.OutStream;
 import org.dissan.restaurant.controllers.OrderController;
 import org.dissan.restaurant.controllers.api.CustomerOrderApi;
-import org.dissan.restaurant.models.dao.meal.MealItemDao;
 import org.dissan.restaurant.patterns.behavioral.observer.TableObserver;
 import org.dissan.restaurant.patterns.behavioral.observer.subjects.ConcreteTableSubject;
 import org.dissan.restaurant.patterns.behavioral.observer.subjects.TableSubject;
@@ -14,7 +12,6 @@ import org.dissan.restaurant.patterns.behavioral.observer.subjects.TableSubjectS
 import org.dissan.restaurant.patterns.creational.factory.ObserverFactory;
 import org.dissan.restaurant.patterns.creational.factory.TableActor;
 import java.util.List;
-import java.util.Map;
 
 public class CustomerOrderFacade implements CustomerOrderApi {
     private TableBean tableBean;
@@ -27,9 +24,6 @@ public class CustomerOrderFacade implements CustomerOrderApi {
         this.tableBean = orderController.getTableBean();
     }
 
-    private void pullItems(){
-        this.tableBean.setMealItem(MealItemDao.pullMenuItems());
-    }
 
     public TableBean getMenuBean() {
         return tableBean;
@@ -45,8 +39,7 @@ public class CustomerOrderFacade implements CustomerOrderApi {
         return builder.toString();
     }
 
-    //TODO DOWNLOAD TABLE HERE FOR SUBJECT SELECTION
-    private TableBean newCustomers(String tableName, int clients) throws TableDaoException {
+    private void newCustomers(String tableName, int clients) throws TableDaoException {
         if (!TableSubject.getFreeTables().contains(tableName)){
             throw new TableDaoException(tableName + " occupied or not exist");
         }
@@ -57,7 +50,6 @@ public class CustomerOrderFacade implements CustomerOrderApi {
         this.observer = ObserverFactory.getInstance(TableActor.CUSTOMER, tableName);
         this.subject.attach(observer);
         this.tableBean = bean;
-        return this.orderController.getTableBean();
     }
 
     public void sendOrder() {
@@ -80,42 +72,13 @@ public class CustomerOrderFacade implements CustomerOrderApi {
     }
 
 
-    public TableBean getTableBean() throws TableDaoException {
+    public TableBean getTableBean() {
         return this.tableBean;
     }
 
     @Override
     public List<String> getFreeTables() {
         return TableSubject.getFreeTables();
-    }
-
-    // TODO: 31/05/23 move this static methods to OrderCliState
-    private static void printMeals(TableBeanApi tableBean){
-        for (Map.Entry<Integer, List<String>> entry:
-                tableBean.getItems().entrySet()) {
-            List<String> meals = entry.getValue();
-            StringBuilder builder = new StringBuilder();
-            builder.append('[').append(entry.getKey()).append("]-> ");
-            builder.append(meals.get(0)).append(" price: ").append(meals.get(1)).append("\ningredients:\t{");
-            int size = meals.size();
-            List<String> sub = meals.subList(2, size - 1);
-            for (String m:
-                    sub) {
-                builder.append(m).append(", ");
-            }
-            builder.append(meals.get(size - 1)).append('}');
-            OutStream.println(builder.toString());
-        }
-    }
-
-    private static void printCurrentCart(TableBeanApi tableBean){
-        StringBuilder builder = new StringBuilder();
-        for (String s:
-                tableBean.getCurrentCart()) {
-            builder.append(s).append('\n');
-        }
-
-        OutStream.print(builder.toString());
     }
 
     public void setUpTable(String tableName, int customerNumber) throws TableDaoException {

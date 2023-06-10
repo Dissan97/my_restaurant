@@ -10,6 +10,7 @@ public class HashUtil {
 
     private static final String HASH_ALGORITH = "SHA-256";
 
+    private HashUtil(){}
     public static @Nullable String hashString(@NotNull String input) {
         try {
             // Create a MessageDigest object with SHA-256 algorithm

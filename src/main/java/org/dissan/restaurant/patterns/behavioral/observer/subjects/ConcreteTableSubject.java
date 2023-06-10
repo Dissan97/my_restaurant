@@ -14,7 +14,6 @@ public class ConcreteTableSubject extends TableSubject{
         this.observerList = new ArrayList<>();
         tableBean = new TableBean();
         tableBean.setTable(freeTables.get(tableName));
-        int i = 0;
     }
 
 
@@ -42,10 +41,8 @@ public class ConcreteTableSubject extends TableSubject{
         if (tableObserverMap == null){
             tableObserverMap = new HashMap<>();
         }
-
-        if (!tableObserverMap.containsKey(tableName)){
-            ConcreteTableSubject concreteTableSubject = new ConcreteTableSubject(tableName);
-            tableObserverMap.put(tableName, concreteTableSubject);
+        ConcreteTableSubject concreteTableSubject = new ConcreteTableSubject(tableName);
+        if (tableObserverMap.putIfAbsent(tableName, concreteTableSubject) == null){
             tableNoMoreFree(tableName);
         }
 

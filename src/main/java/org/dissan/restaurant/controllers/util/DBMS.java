@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class DBMS {
+
     private static final String CONF = "conf.json";
     private static Map<String, JSONObject> localCache;
     private static final String USERNAME = "username";
@@ -22,6 +23,9 @@ public class DBMS {
     private static boolean firstConnection = true;
     private static String actualRole;
     private static String url;
+
+    private DBMS() {
+    }
 
     public static Connection open() throws SQLException, ClassNotFoundException, DBMSException {
         if (firstConnection){

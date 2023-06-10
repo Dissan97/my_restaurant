@@ -21,40 +21,25 @@ public class AttendantHomeCliState extends EmployeeHomeCliState {
         }
 
         switch (cmd) {
-            case "order_to_deliver":
-            case "1":
-                order_to_deliver();
-                break;
-            case "handle_bill":
-            case "2":
-                handleBill();
-                break;
-            case "help":
-            case "3":
-                showHelp();
-                break;
-            case "exit":
-            case "4":
+            case "order_to_deliver", "1" -> orderToDeliver();
+            case "handle_bill", "2" -> handleBill();
+            case "help", "3" -> showHelp();
+            case "exit", "4" -> {
                 return;
-            case "back":
-            case "5":
+            }
+            case "back", "5" -> {
                 changeState(previousState);
                 return;
-            case "account":
-            case "6":
-                showAccountInfo();
-                break;
-            case MANAGE_SCHEDULE:
-            case "7":
+            }
+            case "account", "6" -> showAccountInfo();
+            case MANAGE_SCHEDULE, "7" -> {
                 try {
                     manageSchedule();
                 } catch (EmployeeDaoException e) {
                     outline(e.getMessage());
                 }
-                break;
-            default:
-                logger.warning("Something wrong");
-                break;
+            }
+            default -> logger.warning("Something wrong");
         }
         updateUi();
     }
@@ -63,7 +48,7 @@ public class AttendantHomeCliState extends EmployeeHomeCliState {
         //to implement
     }
 
-    private void order_to_deliver() {
+    private void orderToDeliver() {
         //to implement
     }
 
