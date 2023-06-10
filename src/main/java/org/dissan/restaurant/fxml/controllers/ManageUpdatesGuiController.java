@@ -24,6 +24,7 @@ public class ManageUpdatesGuiController {
     }
 
     private void updateRequests() {
+        this.updateRequestList.getItems().clear();
         this.shiftManager.getUpdateRequest();
         this.updateRequestList.getItems().addAll(this.shiftScheduleBean.getUpdateShiftSchedules());
     }
@@ -34,12 +35,15 @@ public class ManageUpdatesGuiController {
     }
     @FXML
     public void home() {
+        GuiController.getHome();
     }
     @FXML
     public void back() {
+        GuiController.getBack();
     }
     @FXML
     public void switchPersistence() {
+        this.shiftManager.switchPersistence();
     }
     @FXML
     public void acceptRequest() {

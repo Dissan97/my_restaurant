@@ -16,6 +16,7 @@ module restaurant {
     exports org.dissan.restaurant.controllers.exceptions;
     exports org.dissan.restaurant.controllers.util;
     exports org.dissan.restaurant.fxml.controllers;
+    exports org.dissan.restaurant.fxml.util;
     exports org.dissan.restaurant.models;
     exports org.dissan.restaurant.models.dao.meal;
     exports org.dissan.restaurant.models.dao.schedule;
@@ -30,6 +31,6 @@ module restaurant {
     exports org.dissan.restaurant.patterns.behavioral.observer;
     exports org.dissan.restaurant.patterns.structural.facade;
 
-
     opens org.dissan.restaurant.fxml.controllers to javafx.fxml;
+    opens org.dissan.restaurant.fxml.util to javafx.fxml;
 }

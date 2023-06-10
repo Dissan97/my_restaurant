@@ -9,13 +9,11 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dissan.restaurant.fxml.controllers.AssignShiftGuiController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dissan.restaurant.fxml.controllers.EmployeeShiftManagerGui">
     <ToolBar layoutY="-6.0" prefHeight="40.0" prefWidth="1024.0">
         <HBox prefHeight="25.0" spacing="25.0">
             <padding>
@@ -52,18 +50,8 @@
             </HBox>
         </AnchorPane>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-            <Label alignment="CENTER" layoutX="203.0" layoutY="125.0" prefHeight="40.0" prefWidth="306.0" style="-fx-border-color: grey;" text="ASSIGN NEW SCHEDULE" />
-            <TextArea fx:id="shiftCd" layoutX="181.0" layoutY="200.0" prefHeight="50.0" prefWidth="350.0" promptText="shift code">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </TextArea>
-            <TextArea fx:id="employeeCd" layoutX="181.0" layoutY="270.0" prefHeight="50.0" prefWidth="350.0" promptText="employee code">
-                <font>
-                    <Font size="14.0" />
-                </font>
-            </TextArea>
-            <HBox layoutX="181.0" layoutY="350.0" prefHeight="50.0" prefWidth="350.0">
+            <Label alignment="CENTER" layoutX="203.0" layoutY="125.0" prefHeight="40.0" prefWidth="306.0" style="-fx-border-color: grey;" text="MANAGE SCHEDULE" />
+            <HBox layoutX="181.0" layoutY="215.0" prefHeight="50.0" prefWidth="350.0">
                 <Label alignment="CENTER" prefHeight="50.0" prefWidth="56.0" text="date" />
                 <DatePicker fx:id="datePicker" prefHeight="50.0" prefWidth="147.0" />
             <MenuButton fx:id="hourMenuButton" mnemonicParsing="false" prefHeight="50.0" prefWidth="70.0" text="Hour">
@@ -82,7 +70,7 @@
                </opaqueInsets>
             </Label>
             </HBox>
-            <Button layoutX="444.0" layoutY="425.0" mnemonicParsing="false" onAction="#assignShift" prefHeight="50.0" prefWidth="87.0" text="ASSIGN" />
+            <Button layoutX="313.0" layoutY="303.0" mnemonicParsing="false" onAction="#requestUpdate" prefHeight="50.0" prefWidth="87.0" text="REQUEST" />
         </AnchorPane>
     </SplitPane>
 </AnchorPane>

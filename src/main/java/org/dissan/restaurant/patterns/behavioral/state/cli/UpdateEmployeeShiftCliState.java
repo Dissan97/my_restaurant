@@ -12,8 +12,8 @@ import org.dissan.restaurant.controllers.exceptions.*;
 import java.util.Map;
 
 public class UpdateEmployeeShiftCliState extends CliState {
-    private ShiftManagerEmployeeApi shiftManager;
-    private ShiftScheduleBeanEmployeeApi shiftBean;
+    private final ShiftManagerEmployeeApi shiftManager;
+    private final ShiftScheduleBeanEmployeeApi shiftBean;
 
     public UpdateEmployeeShiftCliState(UserBean userBean) throws EmployeeDaoException {
         super(UpdateEmployeeShiftCliState.class.getSimpleName());
@@ -30,31 +30,27 @@ public class UpdateEmployeeShiftCliState extends CliState {
         }
 
         switch (cmd) {
-            case "view_schedules":
-            case "1":
+            case "view_schedules", "1":
                 viewSchedules();
                 updateUi();
                 break;
-            case "request_update":
-            case "2":
+            case "request_update", "2":
                 requestUpdate();
                 updateUi();
                 break;
-            case "help":
-            case "3":
+            case "help","3":
                 showHelp();
                 break;
-            case "exit":
-            case "4":
+            case "exit", "4":
                 break;
-            case "back":
-            case "5":
+            case "back", "5":
                 getBack();
+                break;
             default:
                 logger.warning("Something wrong");
                 updateUi();
                 break;
-            }
+        }
 
     }
 

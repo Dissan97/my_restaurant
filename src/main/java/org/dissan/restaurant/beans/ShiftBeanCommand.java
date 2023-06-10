@@ -3,5 +3,5 @@ package org.dissan.restaurant.beans;
 public enum ShiftBeanCommand {
     SHIFT_CODE,
     EMPLOYEE_CODE,
-    DATE_TIME
+    UPDATE_DATE_TIME, DATE_TIME
 }

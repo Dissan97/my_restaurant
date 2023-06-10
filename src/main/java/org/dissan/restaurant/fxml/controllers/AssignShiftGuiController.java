@@ -11,10 +11,8 @@ import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
+import org.dissan.restaurant.fxml.util.GuiDatePickerUtil;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 public class AssignShiftGuiController extends AccountControllerGui{
@@ -59,28 +57,14 @@ public class AssignShiftGuiController extends AccountControllerGui{
         }
     }
 
-    private String parseLocalToSystemDate(String shiftDate){
-        String dateFormatted;
-        SimpleDateFormat localFormat = new SimpleDateFormat("MM/dd/yyyy");
-        SimpleDateFormat systemFormat = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            Date parseDate = localFormat.parse(shiftDate);
-            dateFormatted = systemFormat.format(parseDate);
-        } catch (ParseException e) {
-            dateFormatted = "";
-        }
-        return dateFormatted;
-    }
-
     @FXML
     public void assignShift() {
         String shiftDate = this.datePicker.getEditor().getText();
-        shiftDate = parseLocalToSystemDate(shiftDate);
+        shiftDate = GuiDatePickerUtil.parseLocalToSystemDate(shiftDate);
         String employeeCode = this.employeeCd.getText();
         String shiftCode = this.shiftCd.getText();
         String shiftHour = this.hour.getText();
         if (!(shiftDate.isEmpty() || employeeCode.isEmpty() || shiftCode.isEmpty() || shiftHour.isEmpty())){
-
             try {
                 this.scheduleBean.insertCommand(ShiftBeanCommand.DATE_TIME, shiftDate + "::" + shiftHour);
                 this.scheduleBean.insertCommand(ShiftBeanCommand.EMPLOYEE_CODE, employeeCode);
@@ -91,9 +75,7 @@ public class AssignShiftGuiController extends AccountControllerGui{
                      ShiftScheduleDaoException e) {
                     GuiController.popUpError(e);
             }
-
         }
-
     }
 
     public void switchPersistence() {

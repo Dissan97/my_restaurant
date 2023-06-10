@@ -70,11 +70,9 @@ public class ShiftSchedule{
     }
 
     public void setShiftUpdateDate(String shiftUpdateDate) {
-        if (shiftUpdateDate != null){
-            if (updateRequest){
+        if (shiftUpdateDate != null && (updateRequest)){
                 this.shiftUpdateDate = BeanUtil.goodDate(shiftUpdateDate, true);
                 return;
-            }
         }
         this.shiftUpdateDate = shiftUpdateDate;
     }

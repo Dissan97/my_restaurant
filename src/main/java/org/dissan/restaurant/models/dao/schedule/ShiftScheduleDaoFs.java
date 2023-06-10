@@ -1,6 +1,5 @@
 package org.dissan.restaurant.models.dao.schedule;
 
-import org.dissan.restaurant.beans.BeanUtil;
 import org.dissan.restaurant.cli.utils.OutStream;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
 import org.jetbrains.annotations.NotNull;
@@ -43,22 +42,14 @@ public class ShiftScheduleDaoFs {
         return array;
     }
 
-    private static void checkLocalCache() {
+    private static synchronized void checkLocalCache() {
         if (LOCAL_CACHE.isEmpty()){
             loadSchedules();
         }
-
-        for (Map.Entry<Integer, JSONObject> entry:
-        LOCAL_CACHE.entrySet()) {
-            if (BeanUtil.goodDate(entry.getValue().getString(ShiftScheduleDao.SHIFT_DATE), true) == null){
-                loadSchedules();
-            }
-        }
-
     }
 
 
-    private static void loadSchedules(){
+    private static synchronized void loadSchedules(){
         JSONArray schedulesArray;
         LOCAL_CACHE.clear();
         try (InputStream reader = Objects.requireNonNull(ShiftScheduleDaoFs.class.getResourceAsStream(ShiftScheduleDaoFs.SCHEDULES))){
@@ -66,10 +57,7 @@ public class ShiftScheduleDaoFs {
             schedulesArray = new JSONArray(jsonTokener);
             for (int i = 0; i < schedulesArray.length(); i++){
                 JSONObject schedule = schedulesArray.getJSONObject(i);
-                String shiftDate = schedule.getString(ShiftScheduleDao.SHIFT_DATE);
-                if (BeanUtil.goodDate(shiftDate, true) != null){
-                    LOCAL_CACHE.put(i, schedule);
-                }
+                LOCAL_CACHE.put(i, schedule);
             }
 
         }catch (IOException | NullPointerException e){
@@ -98,41 +86,50 @@ public class ShiftScheduleDaoFs {
     }
 
     public static void pushSchedule(@NotNull JSONObject object, boolean update, boolean accepted) throws ShiftScheduleDaoException {
-
+        loadSchedules();
         String sCode = object.getString(ShiftScheduleDao.SHIFT);
         String eCode = object.getString(ShiftScheduleDao.EMPLOYEE_CODE);
         String date = object.getString(ShiftScheduleDao.SHIFT_DATE);
-
-
-
+        int indexToAddToMap = LOCAL_CACHE.size();
+        //check that this schedule already exist
         if (ShiftScheduleDaoFs.pullSchedule(sCode, eCode, date) != null) {
+            // if update is call then it will be updated
             if (update) {
-                removeObject(sCode, eCode, date);
-                if (accepted){
+                indexToAddToMap = removeScheduleFromLocalCache(sCode, eCode, date);
+                if (indexToAddToMap == -1){
+                    return;
+                }
+                if (accepted) {
+                    //if it is accepted then it will be removed the oldest one and exchange the two dates
                     object.remove(ShiftScheduleDao.SHIFT_DATE);
                     object.put(ShiftScheduleDao.SHIFT_DATE, object.get(ShiftScheduleDao.SHIFT_UPDATE_DATE));
                     object.remove(ShiftScheduleDao.SHIFT_UPDATE_DATE);
                 }
+                //this entry will be removed either it is accepted or not
+            } else {
+                    return;
             }
         }
+        LOCAL_CACHE.put(indexToAddToMap, object);
+        storeData();
+    }
 
-        LOCAL_CACHE.put(LOCAL_CACHE.size(), object);
+    private static void storeData() throws ShiftScheduleDaoException {
         try (BufferedWriter writer = new BufferedWriter(
                 new FileWriter(Objects.requireNonNull(ShiftScheduleDaoFs.class.getResource(SCHEDULES)).getPath())
         )){
             JSONArray array = new JSONArray();
             for (Map.Entry <Integer,JSONObject> entry:
-                 LOCAL_CACHE.entrySet()) {
+                    LOCAL_CACHE.entrySet()) {
                 array.put(entry.getValue());
             }
             array.write(writer);
         }catch (IOException e){
             throw new ShiftScheduleDaoException("PROBLEMS: " + e.getMessage());
         }
-
     }
 
-    private static void removeObject(@NotNull String sCode,@NotNull String eCode, @NotNull String date) {
+    private static int removeScheduleFromLocalCache(@NotNull String sCode, @NotNull String eCode, @NotNull String date) {
         if (LOCAL_CACHE.isEmpty()){
             loadSchedules();
         }
@@ -152,6 +149,7 @@ public class ShiftScheduleDaoFs {
         if (index != -1){
             LOCAL_CACHE.remove(index);
         }
+        return index;
     }
 
 

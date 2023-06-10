@@ -74,13 +74,13 @@ public class ShiftScheduleDao {
                 String shiftDate = object.getString(SHIFT_DATE);
                 boolean updateRequest = object.getBoolean(UPDATE_REQUEST);
                 ShiftSchedule schedule = fillSchedule(shift, employeeCode, shiftDate, updateRequest);
-                if (updateRequest && schedule != null) {
-                    if (object.has(SHIFT_UPDATE_DATE)) {
+                if (updateRequest && schedule != null && (object.has(SHIFT_UPDATE_DATE))) {
                         String shiftUpdateDate = object.getString(SHIFT_UPDATE_DATE);
                         schedule.setShiftUpdateDate(shiftUpdateDate);
-                    }
                 }
-                shiftScheduleList.add(schedule);
+                if (schedule != null) {
+                    shiftScheduleList.add(schedule);
+                }
             }
         }
         return shiftScheduleList;

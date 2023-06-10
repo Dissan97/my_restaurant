@@ -49,19 +49,26 @@ public class BeanUtil {
         }
     }
 
-    public static @Nullable String goodDate(String dateTime, boolean task) {
+    public static @Nullable String goodDate(String dateTime, boolean dateControl) {
+        if (dateTime == null){
+            return null;
+        }
         Date date;
         String ret;
+        String pattern = DAY_FORMAT;
         try {
-            date = getDate(dateTime, task);
-            SimpleDateFormat format = new SimpleDateFormat(DAY_FORMAT + TIME_FORMAT);
+            date = getDate(dateTime, dateControl);
+            if (dateControl){
+                pattern += TIME_FORMAT;
+            }
+            SimpleDateFormat format = new SimpleDateFormat(pattern);
             ret = format.format(date);
         } catch (ParseException e) {
             //This is thrown when is passed a bad date format
             return null;
         }
 
-        if (!task){
+        if (!dateControl){
             return ret;
         }
         Calendar calendar = Calendar.getInstance();

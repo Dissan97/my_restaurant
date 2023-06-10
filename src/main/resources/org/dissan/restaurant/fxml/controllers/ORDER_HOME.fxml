@@ -7,7 +7,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dissan.restaurant.fxml.controllers.OrderHome">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dissan.restaurant.fxml.controllers.OrderHome">
     <Label alignment="CENTER" layoutX="343.0" layoutY="100.0" prefHeight="50.0" prefWidth="350.0" text="SELECT TABLE" textAlignment="CENTER" />
    <Button fx:id="startButton" layoutX="349.0" layoutY="600.0" mnemonicParsing="false" onAction="#start" prefHeight="50.0" prefWidth="350.0" text="ORDER" />
     <ScrollPane layoutX="274.0" layoutY="150.0" prefHeight="346.0" prefWidth="500.0">

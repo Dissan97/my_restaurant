@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.cli.utils.OutStream;
+import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
 import org.dissan.restaurant.patterns.structural.facade.CustomerOrderFacade;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,6 +27,7 @@ public class GuiController extends Application {
     private static Scene previousScene;
     private static Scene currentScene;
     private static Scene homeScene;
+
 
 
 
@@ -86,6 +88,19 @@ public class GuiController extends Application {
         mainStage.show();
     }
 
+    public static void openManageEmployeeSchedule(@NotNull Scenes ui,@NotNull UserBean userBean) {
+        FXMLLoader loader = new FXMLLoader(GuiController.class.getResource(ui.name() + FXML));
+        try {
+            currentScene = new Scene(loader.load(), WIDTH, HEIGHT);
+            changeScene();
+            EmployeeShiftManagerGui controllerGui = loader.getController();
+            controllerGui.setUserBean(userBean);
+        } catch (IOException | EmployeeDaoException e) {
+            GuiController.internalError(e);
+            e.printStackTrace();
+        }
+    }
+
     /**
      *
      * @param scene The scene that will be loaded
@@ -93,24 +108,12 @@ public class GuiController extends Application {
      *           CookerGuiController or ManagerGuiController
      */
     private static void setPreviousScenes(Scene scene, @NotNull Scenes ui) {
-        switch (ui){
-            //SETUP HOME SCENES
-            case ATTENDANT_VIEW:
-            case MANAGER_VIEW:
-            case COOKER_VIEW:
-            case HOME_MENU:
-                homeScene = scene;
-                previousScene = scene;
-                break;
-            case LOGIN_VIEW:
-            case SIGN_UP_VIEW:
-            case ACCOUNT:
-            case ORDER_HOME:
-            case CUSTOMER_ORDER_VIEW:
-                previousScene = mainStage.getScene();
-                break;
-            default:
-                break;
+        //SETUP HOME SCENES
+        if (ui == Scenes.ATTENDANT_VIEW || ui == Scenes.MANAGER_VIEW || ui == Scenes.COOKER_VIEW || ui == Scenes.HOME_MENU) {
+            homeScene = scene;
+            previousScene = scene;
+        } else if (ui == Scenes.LOGIN_VIEW || ui == Scenes.SIGN_UP_VIEW || ui == Scenes.ACCOUNT || ui == Scenes.ORDER_HOME || ui == Scenes.CUSTOMER_ORDER_VIEW) {
+            previousScene = mainStage.getScene();
         }
     }
 
@@ -147,7 +150,7 @@ public class GuiController extends Application {
         popUpMessage(message, false,false);
     }
 
-    public static void popUpMessage(String message,boolean error ,boolean wait) {
+    private static void popUpMessage(String message,boolean error ,boolean wait) {
         FXMLLoader loader = new FXMLLoader(GuiController.class.getResource(Scenes.POP_UP.name() + FXML));
         try {
             Scene scene = new Scene(loader.load(), POP_UP_WIDTH, POP_UP_HEIGHT);

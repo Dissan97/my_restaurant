@@ -100,6 +100,7 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
     @Override
     public void requestUpdate() throws ShiftScheduleDaoException {
         ShiftSchedule schedule = this.bean.getShiftSchedule();
+        schedule.setShiftUpdateDate(this.bean.getRelativeEntry(ShiftBeanCommand.UPDATE_DATE_TIME));
 	    shiftScheduleDao.update(schedule, false);
     }
 
@@ -142,7 +143,7 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
         //removing schedule that does not have update request or has updated but does not have updateDate.
         shiftScheduleList.removeIf(schedule ->
                  BeanUtil.goodDate(schedule.getShiftDate(), true) == null ||
-                        !(schedule.isUpdateRequest() || schedule.getShiftUpdateDate() != null )
+                        !(schedule.isUpdateRequest() && schedule.getShiftUpdateDate() != null )
         );
         this.bean.setUpdateRequestList(shiftScheduleList);
     }
@@ -170,6 +171,7 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
 
     public void pullSchedules(){
         List<ShiftSchedule> scheduleList = this.shiftScheduleDao.pullShiftSchedules();
+        scheduleList.removeIf(shiftSchedule -> BeanUtil.goodDate(shiftSchedule.getShiftDate(), true) == null);
         this.bean.setShiftScheduleList(scheduleList);
     }
 

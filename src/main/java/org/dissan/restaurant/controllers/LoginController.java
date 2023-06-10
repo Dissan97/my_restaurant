@@ -2,27 +2,25 @@ package org.dissan.restaurant.controllers;
 
 import org.dissan.restaurant.beans.BadCommanEntryException;
 import org.dissan.restaurant.beans.EmployeeBean;
-import org.dissan.restaurant.beans.UserBeanCommand;
 import org.dissan.restaurant.beans.UserBean;
+import org.dissan.restaurant.beans.UserBeanCommand;
 import org.dissan.restaurant.controllers.exceptions.UserAlreadyExistException;
 import org.dissan.restaurant.controllers.exceptions.UserCredentialException;
 import org.dissan.restaurant.controllers.exceptions.UserNotFoundException;
-import org.dissan.restaurant.controllers.util.DBMS;
-import org.dissan.restaurant.controllers.util.DBMSException;
 import org.dissan.restaurant.controllers.util.HashUtil;
 import org.dissan.restaurant.models.AbstractUser;
 import org.dissan.restaurant.models.ConcreteUser;
 import org.dissan.restaurant.models.Employee;
 import org.dissan.restaurant.models.dao.user.EmployeeDao;
 import org.dissan.restaurant.models.dao.user.UserDao;
+
 import java.io.IOException;
 import java.util.List;
 
 public class LoginController {
-    private final UserBean userBean;
+    private UserBean userBean;
     private AbstractUser user;
     private UserDao dao;
-    private boolean local = true;
 
     public LoginController() {
         this.userBean = new UserBean();
@@ -36,7 +34,8 @@ public class LoginController {
     }
 
     private void checkUser(String username) throws UserNotFoundException {
-        this.dao.setLocal(this.local);
+       boolean local = true; // for future implementation
+        this.dao.setLocal(local);
         AbstractUser userInfo = this.dao.getUserByUsername(username);
         if (userInfo == null){
             throw new UserNotFoundException(username + " does not exist");
@@ -95,8 +94,7 @@ public class LoginController {
         return employeeBean;
     }
 
-    public void setLocal(boolean lcl) throws DBMSException {
-        DBMS.setActualRole("LOGIN");
-        this.local = lcl;
+    public void setUserBean(UserBean ub) {
+        this.userBean = ub;
     }
 }

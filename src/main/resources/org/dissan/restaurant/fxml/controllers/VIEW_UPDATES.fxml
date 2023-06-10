@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dissan.restaurant.fxml.controllers.ManageUpdatesGuiController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1024.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.dissan.restaurant.fxml.controllers.ManageUpdatesGuiController">
     <VBox alignment="TOP_CENTER" layoutY="33.0" prefHeight="687.0" prefWidth="1024.0">
         <HBox alignment="TOP_RIGHT" prefHeight="40.0" prefWidth="304.0">
             <Label alignment="CENTER" prefHeight="40.0" prefWidth="209.0" style="-fx-border-color: grey;" text="SCHEDULES" />
