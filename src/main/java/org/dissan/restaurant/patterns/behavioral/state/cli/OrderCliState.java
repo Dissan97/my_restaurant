@@ -3,7 +3,6 @@ package org.dissan.restaurant.patterns.behavioral.state.cli;
 import org.dissan.restaurant.beans.api.TableBeanApi;
 import org.dissan.restaurant.cli.utils.OutStream;
 import org.dissan.restaurant.patterns.structural.facade.CustomerOrderFacade;
-import org.dissan.restaurant.patterns.structural.facade.TableDaoException;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +21,7 @@ public class OrderCliState extends CliState{
         this.orderController = facade;
     }
 
-    public void initFacade() throws TableDaoException {
+    public void initFacade() {
         this.tableBean = this.orderController.getTableBean();
     }
 
