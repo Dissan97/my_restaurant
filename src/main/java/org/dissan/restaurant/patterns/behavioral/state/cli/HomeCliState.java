@@ -19,13 +19,9 @@ public class HomeCliState extends CliState{
             updateUi();
         }
         CliState state;
-        switch (cmd){
-            case "order":
-            case "1":
-                selectTable();
-                break;
-            case "login":
-            case"2":
+        switch (cmd) {
+            case "order", "1" -> selectTable();
+            case "login", "2" -> {
                 try {
                     state = StateFactory.getInstance(CliStateEnum.LOGIN, this);
                 } catch (CliUiException e) {
@@ -34,18 +30,13 @@ public class HomeCliState extends CliState{
                     return;
                 }
                 this.changeState(state);
-                break;
-            case "help":
-            case"3":
-                super.showHelp();
-                break;
-            case "exit":
-            case"4":
-                super.exitProgram();
-                break;
-            default:
+            }
+            case "help", "3" -> super.showHelp();
+            case "exit", "4" -> super.exitProgram();
+            default -> {
                 OutStream.println("SOME PROBLEM OCCURRED");
                 updateUi();
+            }
         }
     }
 
@@ -58,7 +49,6 @@ public class HomeCliState extends CliState{
         out(builder.toString());
     }
 
-    //todo Some controller that shows me the available table... --->
     private void selectTable() {
         CustomerOrderFacade facade = new CustomerOrderFacade();
         OrderCliState orderCliState = new OrderCliState(this, facade);
@@ -76,7 +66,7 @@ public class HomeCliState extends CliState{
 
     private void parseTableCmd(CustomerOrderFacade facade){
         String tableName = getUserInput("Table name");
-        int customerNumber = 0;
+        int customerNumber;
         try {
             customerNumber = Integer.parseInt(getUserInput("Customers: "));
         }catch (NumberFormatException e){

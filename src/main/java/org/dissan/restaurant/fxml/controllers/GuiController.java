@@ -64,7 +64,6 @@ public class GuiController extends Application {
             changeScene();
         } catch (IOException e) {
             GuiController.internalError(e);
-            e.printStackTrace();
         }
     }
 
@@ -80,7 +79,6 @@ public class GuiController extends Application {
             changeScene();
         } catch (IOException e) {
             GuiController.internalError(e);
-            e.printStackTrace();
         }
     }
     private static void changeScene() {
@@ -97,7 +95,6 @@ public class GuiController extends Application {
             controllerGui.setUserBean(userBean);
         } catch (IOException | EmployeeDaoException e) {
             GuiController.internalError(e);
-            e.printStackTrace();
         }
     }
 

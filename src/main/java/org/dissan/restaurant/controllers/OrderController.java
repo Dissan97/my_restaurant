@@ -92,26 +92,23 @@ public class OrderController implements  CookerOrderApi, AttendantOrderApi {
         return this.observer;
     }
 
-    public TableBean getTableBean(String tableName, int clients) {
-        return tableBean;
-    }
-
 
     @Override
     public void setOrderReady() {
-
+        //to implement
     }
 
 
 
     @Override
     public void setDelivered() {
+        //to implement
 
     }
 
     @Override
     public void checkBill() {
-
+        //to implement
     }
 
 }

@@ -34,34 +34,17 @@ public class OrderCliState extends CliState{
             updateUi();
         }
 
-        switch (cmd){
-            case "add_item":
-            case "1":
-                addItem();
-                break;
-            case "remove_item":
-            case "2":
-                removeItem();
-                break;
-            case "send_order":
-            case "3":
-                sendOrder();
-                break;
-            case "pay":
-            case "4":
-                pay();
-                break;
-            case "help":
-            case"5":
-                super.showHelp();
-                break;
-            case "exit":
-            case"6":
-                super.exitProgram();
-                break;
-            default:
+        switch (cmd) {
+            case "add_item", "1" -> addItem();
+            case "remove_item", "2" -> removeItem();
+            case "send_order", "3" -> sendOrder();
+            case "pay", "4" -> pay();
+            case "help", "5" -> super.showHelp();
+            case "exit", "6" -> super.exitProgram();
+            default -> {
                 OutStream.println("SOME PROBLEM OCCURRED");
                 updateUi();
+            }
         }
     }
 
@@ -70,6 +53,7 @@ public class OrderCliState extends CliState{
         List<String> currentCart = this.tableBean.getCurrentCart();
         if (!currentCart.isEmpty()){
             //do stuff
+            OutStream.println("to implement");
         }
         updateUi();
     }
@@ -136,15 +120,11 @@ public class OrderCliState extends CliState{
             int i;
             List<String> info = entry.getValue();
             for (i = 0; i < info.size() - 1; i++){
-                switch (i){
-                    case 0:
-                        builder.append('[').append(entry.getKey()).append(']').append("name: ").append(info.get(i)).append("; ");
-                        break;
-                    case 1:
-                        builder.append("price: ").append(info.get(i)).append('\n').append("ingredients: {");
-                        break;
-                    default:
-                        builder.append("price: ").append(info.get(i));
+                switch (i) {
+                    case 0 ->
+                            builder.append('[').append(entry.getKey()).append(']').append("name: ").append(info.get(i)).append("; ");
+                    case 1 -> builder.append("price: ").append(info.get(i)).append('\n').append("ingredients: {");
+                    default -> builder.append("price: ").append(info.get(i));
                 }
             }
             builder.append(info.get(i)).append('}').append('\n');
