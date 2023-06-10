@@ -6,7 +6,7 @@ import java.util.Map;
 public interface TableBeanApi {
     String getTableInfo();
 
-    Map<Integer, List<String>> getItems();
+    Map<Integer, List<String>> getMealItems();
 
     void addItem(String item);
 

@@ -1,11 +1,11 @@
 package org.dissan.restaurant;
 
 import org.dissan.restaurant.cli.utils.OutStream;
-import org.dissan.restaurant.fxml.controllers.GuiController;
-import org.dissan.restaurant.patterns.behavioral.state.cli.CliState;
-import org.dissan.restaurant.patterns.behavioral.state.cli.CliStateEnum;
-import org.dissan.restaurant.patterns.behavioral.state.cli.exceptions.CliUiException;
-import org.dissan.restaurant.patterns.creational.factory.StateFactory;
+import org.dissan.restaurant.gui.fxml.controllers.GuiController;
+import org.dissan.restaurant.cli.patterns.behavioral.state.CliState;
+import org.dissan.restaurant.cli.patterns.behavioral.state.CliStateEnum;
+import org.dissan.restaurant.cli.patterns.behavioral.state.exceptions.CliUiException;
+import org.dissan.restaurant.cli.patterns.behavioral.creational.factory.StateFactory;
 import org.jetbrains.annotations.NotNull;
 
 public class Main {

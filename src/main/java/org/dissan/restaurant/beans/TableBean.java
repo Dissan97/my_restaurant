@@ -15,7 +15,7 @@ public class TableBean implements TableBeanApi {
     private Table table;
     private OrderCheck check;
 
-    private List<MealItem> cart = new ArrayList<>();
+    private final List<MealItem> cart = new ArrayList<>();
     private boolean validPay = false;
 
     public void setMealItem(List<MealItem> items) {
@@ -31,7 +31,7 @@ public class TableBean implements TableBeanApi {
     }
 
     @Override
-    public Map<Integer, List<String>> getItems() {
+    public Map<Integer, List<String>> getMealItems() {
         if (items.isEmpty()) {
             int i = 1;
             for (MealItem mi :

@@ -15,8 +15,8 @@ module restaurant {
     exports org.dissan.restaurant.controllers.api;
     exports org.dissan.restaurant.controllers.exceptions;
     exports org.dissan.restaurant.controllers.util;
-    exports org.dissan.restaurant.fxml.controllers;
-    exports org.dissan.restaurant.fxml.util;
+    exports org.dissan.restaurant.gui.fxml.controllers;
+    exports org.dissan.restaurant.gui.fxml.util;
     exports org.dissan.restaurant.models;
     exports org.dissan.restaurant.models.dao.meal;
     exports org.dissan.restaurant.models.dao.schedule;
@@ -25,12 +25,14 @@ module restaurant {
     exports org.dissan.restaurant.models.dao.user;
     exports org.dissan.restaurant.models.exceptions;
     exports org.dissan.restaurant.patterns.creational.factory;
-    exports org.dissan.restaurant.patterns.behavioral.state.cli;
-    exports org.dissan.restaurant.patterns.behavioral.state.cli.exceptions;
+    exports org.dissan.restaurant.cli.patterns.behavioral.state.exceptions;
     exports org.dissan.restaurant.patterns.behavioral.observer.subjects;
     exports org.dissan.restaurant.patterns.behavioral.observer;
     exports org.dissan.restaurant.patterns.structural.facade;
+    exports org.dissan.restaurant.cli.patterns.behavioral.state;
+    exports org.dissan.restaurant.cli.patterns.behavioral.creational.factory;
 
-    opens org.dissan.restaurant.fxml.controllers to javafx.fxml;
-    opens org.dissan.restaurant.fxml.util to javafx.fxml;
+    opens org.dissan.restaurant.gui.fxml.controllers to javafx.fxml;
+    opens org.dissan.restaurant.gui.fxml.util to javafx.fxml;
+
 }
