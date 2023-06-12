@@ -44,7 +44,7 @@ public class ManagerHomeCliState extends AccountHomeCliState{
                 viewRequests();
                 updateUi();
             }
-            case "accept_request", "5" -> acceptRequest();
+            case "manage_requests", "5" -> mangeRequests();
             case "help", "6" -> showHelp();
             case "exit", "7" -> exitProgram();
             case "account", "8" -> showAccountInfo();
@@ -56,20 +56,26 @@ public class ManagerHomeCliState extends AccountHomeCliState{
         }
     }
 
-    private void acceptRequest() {
+    private void mangeRequests() {
         viewRequests();
-        if (this.scheduleBean.getAllShiftSchedules() != null){
+        if (this.scheduleBean.getAllShiftUpdateScheduleRequests() != null){
             String chosenShift = getUserInput("Choose a schedule");
             try {
                 int index = Integer.parseInt(chosenShift);
                 this.scheduleBean.setShift(index);
-                this.shiftManager.manageRequest(true);
+                boolean accepted = acceptThisRequest();
+                this.shiftManager.manageRequest(accepted);
+                String message = "denied";
+                if (accepted){
+                    message = "accepted";
+                }
+                outline("shift update requests: " + message);
 
             }catch (NumberFormatException e){
                 outline(e.getMessage());
                 String entry = getUserInput("acceptRequest: continue ? y - n");
                 if (entry.equalsIgnoreCase("y") || entry.equalsIgnoreCase("yes")){
-                    acceptRequest();
+                    mangeRequests();
                 }
             } catch (ShiftScheduleDaoException e) {
                 outline("Some error with method shiftManager: " + e.getMessage());
@@ -81,9 +87,16 @@ public class ManagerHomeCliState extends AccountHomeCliState{
         updateUi();
     }
 
+    private boolean acceptThisRequest() {
+        String line = getUserInput("accept the request?");
+
+        return line.equalsIgnoreCase("yes") || line.equalsIgnoreCase("y") ||
+        line.equals("1");
+    }
+
     private void viewRequests() {
         this.shiftManager.getUpdateRequest();
-        outline(this.scheduleBean.getAllShiftSchedules());
+        outline("update_requests:\n" + this.scheduleBean.getAllShiftUpdateScheduleRequests());
     }
 
 
@@ -167,7 +180,7 @@ public class ManagerHomeCliState extends AccountHomeCliState{
 
     private void viewSchedules() {
         this.shiftManager.pullSchedules();
-        String schedules = this.scheduleBean.getAllShiftSchedules();
+        String schedules = this.scheduleBean.getAllShiftUpdateScheduleRequests();
         outline(schedules);
         updateUi();
     }

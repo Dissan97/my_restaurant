@@ -6,8 +6,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public class CookerHomeCliState extends EmployeeHomeCliState{
-    protected CookerHomeCliState(@NotNull UserBean userBean) {
+    public CookerHomeCliState(@NotNull UserBean userBean, CliState currentState) {
         super(CookerHomeCliState.class.getSimpleName(), userBean);
+        previousState = currentState;
     }
 
     @Override

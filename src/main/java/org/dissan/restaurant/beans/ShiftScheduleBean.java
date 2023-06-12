@@ -1,6 +1,9 @@
 package org.dissan.restaurant.beans;
 
 import org.dissan.restaurant.beans.api.ShiftScheduleBeanApi;
+import org.dissan.restaurant.cli.patterns.behavioral.state.ManagerHomeCliState;
+import org.dissan.restaurant.controllers.LoginController;
+import org.dissan.restaurant.controllers.exceptions.UserCredentialException;
 import org.dissan.restaurant.models.Shift;
 import org.dissan.restaurant.models.ShiftSchedule;
 import org.jetbrains.annotations.NotNull;
@@ -27,23 +30,29 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
 
 
     @Override
-    public String getAllShiftSchedules() {
+    public String getAllShiftUpdateScheduleRequests() {
+        final String noShifts = "no shift available";
         if (this.shiftScheduleList != null){
 
+            if (shiftScheduleList.isEmpty()){
+                return noShifts;
+            }
             StringBuilder builder = new StringBuilder();
 
             int i;
 
             for (i = 0; i < shiftScheduleList.size() - 1; i++) {
-                builder.append('[').append(i).append("]: ").append(shiftScheduleList.get(i).toString()).append('\n');
+                builder.append('[').append(i).append("]: ").append(shiftScheduleList.get(i).toString()).append('\n').
+                append("update_date: ").append(shiftScheduleList.get(i).getShiftUpdateDate()).append('\n');
             }
 
-            builder.append('[').append(i).append("]: ").append(shiftScheduleList.get(i).toString());
+            builder.append('[').append(i).append("]: ").append(shiftScheduleList.get(i).toString()).append('\n').
+                    append("update_date: ").append(shiftScheduleList.get(i).getShiftUpdateDate());
 
             return builder.toString();
         }
 
-        return null;
+        return noShifts;
     }
 
     @Override
@@ -164,5 +173,16 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
 
     public void setEmployeeBean(EmployeeBean empBean) {
         this.employeeBean = empBean;
+    }
+
+    public static void main(String[] args) throws BadCommanEntryException, UserCredentialException {
+        LoginController loginController = new LoginController();
+        UserBean userBean = loginController.getUserBean();
+        userBean.insertCommand(UserBeanCommand.USERNAME, "manager");
+        userBean.insertCommand(UserBeanCommand.PASSWORD, "This.is97");
+        loginController.singIn();
+        ManagerHomeCliState cliState = new ManagerHomeCliState(userBean, null);
+        cliState.updateUi();
+
     }
 }

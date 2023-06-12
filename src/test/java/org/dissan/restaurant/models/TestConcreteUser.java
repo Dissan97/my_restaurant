@@ -24,6 +24,7 @@ public class TestConcreteUser {
                 UserRole.ATTENDANT, UserRole.COOKER, UserRole.MANAGER, null);
     }
 
+
     public TestConcreteUser(UserRole exp){
         this.roles = exp;
     }
@@ -33,23 +34,17 @@ public class TestConcreteUser {
 
 
 
-        boolean assertVal = false;
-        ConcreteUser user = null;
+        boolean assertVal;
+        ConcreteUser user;
         try {
             user = MockUser.getUser();
             user.setRole(this.roles);
             user.switchRole();
-            switch (this.roles) {
-                case ATTENDANT:
-                    assertVal = user.getConcreteRole() instanceof Attendant;
-                    break;
-                case COOKER:
-                    assertVal = user.getConcreteRole() instanceof Cooker;
-                    break;
-                case MANAGER:
-                    assertVal = user.getConcreteRole() instanceof Manager;
-                    break;
-            }
+            assertVal = switch (this.roles) {
+                case ATTENDANT -> user.getConcreteRole() instanceof Attendant;
+                case COOKER -> user.getConcreteRole() instanceof Cooker;
+                case MANAGER -> user.getConcreteRole() instanceof Manager;
+            };
         } catch (UserRoleException e) {
             assertVal = true;
         }

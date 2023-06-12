@@ -103,9 +103,10 @@ public class ShiftScheduleDaoFs {
                     //if it is accepted then it will be removed the oldest one and exchange the two dates
                     object.remove(ShiftScheduleDao.SHIFT_DATE);
                     object.put(ShiftScheduleDao.SHIFT_DATE, object.get(ShiftScheduleDao.SHIFT_UPDATE_DATE));
-                    object.remove(ShiftScheduleDao.SHIFT_UPDATE_DATE);
                 }
                 //this entry will be removed either it is accepted or not
+                object.remove(ShiftScheduleDao.SHIFT_UPDATE_DATE);
+
             } else {
                     return;
             }

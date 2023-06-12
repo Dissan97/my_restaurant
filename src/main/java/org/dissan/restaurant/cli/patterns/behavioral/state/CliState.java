@@ -68,7 +68,7 @@ public abstract class CliState {
         this.allowedCommands.put(String.valueOf(size), cmd);
 
     }
-    public void setPageName(String name) {
+    protected void setPageName(String name) {
         this.pageName = '{' + name + '}';
     }
     public abstract void updateUi();

@@ -11,7 +11,6 @@ import org.dissan.restaurant.controllers.exceptions.EmployeeDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDaoException;
 import org.dissan.restaurant.controllers.exceptions.ShiftDateException;
 import org.dissan.restaurant.controllers.exceptions.ShiftScheduleDaoException;
-import org.dissan.restaurant.gui.fxml.util.GuiDatePickerUtil;
 
 import java.util.List;
 
@@ -60,7 +59,6 @@ public class AssignShiftGuiController extends AccountControllerGui{
     @FXML
     public void assignShift() {
         String shiftDate = this.datePicker.getEditor().getText();
-        shiftDate = GuiDatePickerUtil.parseLocalToSystemDate(shiftDate);
         String employeeCode = this.employeeCd.getText();
         String shiftCode = this.shiftCd.getText();
         String shiftHour = this.hour.getText();

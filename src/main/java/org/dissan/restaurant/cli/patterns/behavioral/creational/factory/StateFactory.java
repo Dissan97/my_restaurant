@@ -20,7 +20,8 @@ public class StateFactory {
     public static @NotNull CliState getInstance(@NotNull CliStateEnum cliStateEnum, UserBean bean, CliState currentState) throws CliUiException {
         return switch (cliStateEnum) {
             case ATTENDANT -> new AttendantHomeCliState(bean, currentState);
-            case COOKER, MANAGER -> new ManagerHomeCliState(bean, currentState);
+            case MANAGER -> new ManagerHomeCliState(bean, currentState);
+            case COOKER -> new CookerHomeCliState(bean, currentState);
             case HOME, LOGIN -> getInstance(cliStateEnum, currentState);
         };
     }

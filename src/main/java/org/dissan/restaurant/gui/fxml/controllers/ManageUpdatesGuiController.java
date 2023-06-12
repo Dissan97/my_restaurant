@@ -57,6 +57,11 @@ public class ManageUpdatesGuiController {
         this.shiftScheduleBean.setShift(shiftSelected);
         try {
             this.shiftManager.manageRequest(accepted);
+            String message = "Request refused";
+            if (accepted){
+                message = "Request accepted";
+            }
+            GuiController.popUpMessage(message);
         } catch (ShiftScheduleDaoException e) {
             GuiController.popUpError(e);
         }

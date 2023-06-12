@@ -3,5 +3,5 @@
   "2": "get_employee_schedule",
   "3": "view_schedules",
   "4": "view_requests",
-  "5": "accept_request"
+  "5": "manage_requests"
 }
