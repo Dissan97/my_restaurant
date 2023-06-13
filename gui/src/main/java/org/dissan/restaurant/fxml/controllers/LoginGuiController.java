@@ -3,7 +3,7 @@ package org.dissan.restaurant.fxml.controllers;
 import javafx.fxml.FXML;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
-import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.BadCommandEntryException;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.beans.UserBeanCommand;
 import org.dissan.restaurant.controllers.LoginController;
@@ -35,7 +35,7 @@ public class LoginGuiController {
                 this.userBean.insertCommand(UserBeanCommand.PASSWORD, pwd);
                 this.loginController.singIn();
                 startProperUi();
-            } catch (BadCommanEntryException | UserCredentialException e) {
+            } catch (BadCommandEntryException | UserCredentialException e) {
                 GuiController.popUpError(e);
             }
         }

@@ -48,7 +48,7 @@ public class UserBean implements UserBeanApi {
         return user.getRole();
     }
     @Override
-    public void insertCommand(@NotNull UserBeanCommand command, String entry) throws BadCommanEntryException{
+    public void insertCommand(@NotNull UserBeanCommand command, String entry) throws BadCommandEntryException {
 
         switch (command) {
             case PASSWORD -> BeanUtil.handlePassword(entry);
@@ -61,10 +61,10 @@ public class UserBean implements UserBeanApi {
     }
 
 
-    public String getEntry(UserBeanCommand command) throws BadCommanEntryException {
+    public String getEntry(UserBeanCommand command) throws BadCommandEntryException {
         String ret = this.viewEntries.get(command);
         if (ret == null){
-            throw new BadCommanEntryException(command.name() + " has no entry");
+            throw new BadCommandEntryException(command.name() + " has no entry");
         }
         return ret;
     }

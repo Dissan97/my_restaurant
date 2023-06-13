@@ -1,6 +1,6 @@
 package org.dissan.restaurant.cli.patterns.behavioral.state;
 
-import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.BadCommandEntryException;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.beans.UserBeanCommand;
 import org.dissan.restaurant.beans.api.ShiftScheduleBeanEmployeeApi;
@@ -78,7 +78,7 @@ public class UpdateEmployeeShiftCliState extends CliState {
 
     }
 
-    public static void main(String[] args) throws BadCommanEntryException, UserCredentialException, EmployeeDaoException {
+    public static void main(String[] args) throws BadCommandEntryException, UserCredentialException, EmployeeDaoException {
         LoginController controller = new LoginController();
         UserBean bean = controller.getUserBean();
         bean.insertCommand(UserBeanCommand.USERNAME, "cooker");

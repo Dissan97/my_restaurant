@@ -1,6 +1,6 @@
 package org.dissan.restaurant.cli.patterns.behavioral.state;
 
-import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.BadCommandEntryException;
 import org.dissan.restaurant.beans.EmployeeBean;
 import org.dissan.restaurant.beans.ShiftBeanCommand;
 import org.dissan.restaurant.beans.UserBean;
@@ -57,7 +57,7 @@ public abstract class EmployeeHomeCliState extends AccountHomeCliState{
 
         try {
             this.shiftBean.insertCommand(command, entry);
-        } catch (BadCommanEntryException e) {
+        } catch (BadCommandEntryException e) {
             outline(e.getMessage());
             entry = getUserInput("continue ? y - n");
             if (entry.equalsIgnoreCase("y") || entry.equalsIgnoreCase("yes")){

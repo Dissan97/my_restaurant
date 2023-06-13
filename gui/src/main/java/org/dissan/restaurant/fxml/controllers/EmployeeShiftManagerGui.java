@@ -3,7 +3,7 @@ package org.dissan.restaurant.fxml.controllers;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.BadCommandEntryException;
 import org.dissan.restaurant.beans.BeanUtil;
 import org.dissan.restaurant.beans.ShiftBeanCommand;
 import org.dissan.restaurant.beans.UserBean;
@@ -87,7 +87,7 @@ public class EmployeeShiftManagerGui {
                     this.scheduleBean.insertCommand(ShiftBeanCommand.UPDATE_DATE_TIME, shiftDate + "::" + shiftHour);
                     this.shiftManager.requestUpdate();
                     GuiController.popUpMessage("Shift request updated");
-                } catch (ShiftScheduleDaoException | BadCommanEntryException e) {
+                } catch (ShiftScheduleDaoException | BadCommandEntryException e) {
                     GuiController.popUpError(e);
                 }
             }

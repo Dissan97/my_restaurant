@@ -1,4 +1,4 @@
-package org.dissan.restaurant.cli;
+package org.dissan.restaurant;
 
 
 import org.dissan.restaurant.cli.patterns.behavioral.state.CliState;

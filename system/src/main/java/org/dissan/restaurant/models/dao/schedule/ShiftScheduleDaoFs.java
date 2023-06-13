@@ -23,12 +23,12 @@ public class ShiftScheduleDaoFs {
     private static final String SCHEDULES = "schedules.json";
 
     private static final Map<Integer, JSONObject> LOCAL_CACHE = new HashMap<>();
-    public static @Nullable JSONArray pullShiftSchedules() {
+    public static @NotNull JSONArray pullShiftSchedules() {
 
         checkLocalCache();
 
         if (LOCAL_CACHE.isEmpty()){
-            return null;
+            return new JSONArray();
         }
 
         Set<Integer> keys = LOCAL_CACHE.keySet();

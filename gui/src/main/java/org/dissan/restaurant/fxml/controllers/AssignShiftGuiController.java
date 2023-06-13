@@ -3,7 +3,7 @@ package org.dissan.restaurant.fxml.controllers;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.BadCommandEntryException;
 import org.dissan.restaurant.beans.ShiftBeanCommand;
 import org.dissan.restaurant.beans.api.ShiftScheduleBeanApi;
 import org.dissan.restaurant.controllers.ShiftManager;
@@ -69,7 +69,7 @@ public class AssignShiftGuiController extends AccountControllerGui{
                 this.scheduleBean.insertCommand(ShiftBeanCommand.SHIFT_CODE, shiftCode);
                 this.shiftManager.assignShift();
                 GuiController.popUpMessage("schedule added");
-            } catch (BadCommanEntryException | EmployeeDaoException | ShiftDaoException | ShiftDateException |
+            } catch (BadCommandEntryException | EmployeeDaoException | ShiftDaoException | ShiftDateException |
                      ShiftScheduleDaoException e) {
                     GuiController.popUpError(e);
             }

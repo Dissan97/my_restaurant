@@ -70,7 +70,25 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-
+-- ----------------------------- --
+-- PUSH USERS
+-- ----------------------------- --
+DELIMITER $$
+CREATE PROCEDURE `pushUser` (in usr varchar(64), in pwd varchar(64), in nm varchar(64), in snm varchar(64), in dob varchar(16), in cob varchar (64), in rl varchar(32))
+BEGIN
+	declare exit handler for sqlexception
+	begin
+		rollback;
+	end;
+	set transaction isolation level read uncommitted;
+	start transaction;
+        insert into `my_restaurant`.`Users` values (usr, pwd, nm, snm, dob, cob, rl);
+	commit;
+END$$
+DELIMITER ;
+-- ----------------------------- --
+-- PULL USER_BY_USERNAME
+-- ----------------------------- --
 CREATE PROCEDURE `pullUserByUsername` (in usr varchar(64))
 BEGIN
 		declare exit handler for sqlexception
@@ -103,7 +121,6 @@ BEGIN
 END$$
 
 DELIMITER ;
-;
 
 DELIMITER $$
 
@@ -120,6 +137,7 @@ BEGIN
 		VALUES(emp, sft, shift_date, up);
 	commit;
 END$$
+DELIMITER ;
 
 DELIMITER $$
 
@@ -134,6 +152,7 @@ BEGIN
         select * from `my_restaurant`.`ShiftSchedules`
 	commit;
 END$$
+
 
 
 -- USERS --
@@ -167,7 +186,8 @@ drop user if exists 'LOGIN'@'localhost';
 create user 'LOGIN'@'localhost' identified by 'password';
 
 grant execute on procedure `my_restaurant`.`pullUsers` to 'LOGIN'@'localhost';
-grant execute on procedure `my_restaurant`.`pullUserByUsername` to 'LOGIN'@'localhost';
+grant execute on procedure `my_restaurant`.`pullUsers` to 'LOGIN'@'localhost';
+grant execute on procedure `my_restaurant`.`pushUser` to 'LOGIN'@'localhost';
 grant execute on procedure `my_restaurant`.`pullShifts` to 'MANAGER'@'localhost';
 grant execute on procedure `my_restaurant`.`pullShifts` to 'ATTENDANT'@'localhost';
 grant execute on procedure `my_restaurant`.`pullShifts` to 'COOKER'@'localhost';

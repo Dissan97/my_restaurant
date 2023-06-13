@@ -12,6 +12,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class ShiftScheduleDao {
 
@@ -44,7 +45,7 @@ public class ShiftScheduleDao {
         if (local){
             ShiftScheduleDaoFs.update(object, accepted);
         }else {
-            ShiftScheduleDaoDb.update(schedule, accepted);
+            ShiftScheduleDaoDb.update(object, accepted);
         }
     }
 
@@ -66,21 +67,19 @@ public class ShiftScheduleDao {
             array = ShiftScheduleDaoDb.pullShiftSchedules();
         }
 
-        if (array != null) {
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject object = array.getJSONObject(i);
-                String shift = object.getString(SHIFT);
-                String employeeCode = object.getString(EMPLOYEE_CODE);
-                String shiftDate = object.getString(SHIFT_DATE);
-                boolean updateRequest = object.getBoolean(UPDATE_REQUEST);
-                ShiftSchedule schedule = fillSchedule(shift, employeeCode, shiftDate, updateRequest);
-                if (updateRequest && schedule != null && (object.has(SHIFT_UPDATE_DATE))) {
-                        String shiftUpdateDate = object.getString(SHIFT_UPDATE_DATE);
-                        schedule.setShiftUpdateDate(shiftUpdateDate);
-                }
-                if (schedule != null) {
-                    shiftScheduleList.add(schedule);
-                }
+        for (int i = 0; i < array.length(); i++) {
+            JSONObject object = array.getJSONObject(i);
+            String shift = object.getString(SHIFT);
+            String employeeCode = object.getString(EMPLOYEE_CODE);
+            String shiftDate = object.getString(SHIFT_DATE);
+            boolean updateRequest = object.getBoolean(UPDATE_REQUEST);
+            ShiftSchedule schedule = fillSchedule(shift, employeeCode, shiftDate, updateRequest);
+            if (updateRequest && schedule != null && (object.has(SHIFT_UPDATE_DATE))) {
+                String shiftUpdateDate = object.getString(SHIFT_UPDATE_DATE);
+                schedule.setShiftUpdateDate(shiftUpdateDate);
+            }
+            if (schedule != null) {
+                shiftScheduleList.add(schedule);
             }
         }
         return shiftScheduleList;
@@ -117,17 +116,65 @@ public class ShiftScheduleDao {
         return schedule;
     }
 
-    public static void main(String[] args) throws ShiftDateException, ShiftScheduleDaoException {
-        Shift shift = new Shift("12346");
-        AbstractUser user = new ConcreteUser();
-        Employee emp = new Attendant(user);
-        emp.setEmployeeCode("4321");
-        ShiftSchedule schedule = new ShiftSchedule(shift, emp, "01-05-2023::10:30");
-        ShiftScheduleDao me = new ShiftScheduleDao();
-        me.pushShiftSchedule(schedule);
-    }
-
     public void switchPersistence() {
         this.local = !local;
+        Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+        try {
+            checkConsistency();
+        } catch (ShiftScheduleDaoException e) {
+            logger.warning(e.getMessage());
+        }
+
     }
+
+    private void checkConsistency() throws ShiftScheduleDaoException {
+        JSONArray fsSchedules = ShiftScheduleDaoFs.pullShiftSchedules();
+        JSONArray dbSchedules = ShiftScheduleDaoDb.pullShiftSchedules();
+
+        for (int i = 0; i < fsSchedules.length(); i++) {
+            JSONObject scheduleFs = fsSchedules.getJSONObject(i);
+            checkDbDifferenceFromFs(dbSchedules, scheduleFs);
+        }
+
+        for (int i = 0; i < dbSchedules.length(); i++) {
+            JSONObject scheduleDb = dbSchedules.getJSONObject(i);
+            checkFsDifferenceFromDb(fsSchedules, scheduleDb);
+        }
+
+
+
+    }
+
+    private void checkDbDifferenceFromFs(JSONArray dbSchedules, JSONObject scheduleFs) throws ShiftScheduleDaoException {
+        String shiftFs = scheduleFs.getString(SHIFT);
+        String employeeCodeFs = scheduleFs.getString(EMPLOYEE_CODE);
+        String shiftDateFs = scheduleFs.getString(SHIFT_DATE);
+        for (int j = 0; j < dbSchedules.length(); j++) {
+            JSONObject scheduleDb = dbSchedules.getJSONObject(j);
+            String shiftDb = scheduleDb.getString(SHIFT);
+            String employeeCodeDb = scheduleDb.getString(EMPLOYEE_CODE);
+            String shiftDateDb = scheduleDb.getString(SHIFT_DATE);
+            if (!(shiftFs.equals(shiftDb) || (employeeCodeFs.equals(employeeCodeDb) || shiftDateFs.equals(shiftDateDb)))){
+                ShiftScheduleDaoFs.pushSchedule(scheduleFs);
+                break;
+            }
+        }
+    }
+
+    private void checkFsDifferenceFromDb(JSONArray fsSchedules, JSONObject scheduleDb) throws ShiftScheduleDaoException {
+        String shiftFs = scheduleDb.getString(SHIFT);
+        String employeeCodeFs = scheduleDb.getString(EMPLOYEE_CODE);
+        String shiftDateFs = scheduleDb.getString(SHIFT_DATE);
+        for (int j = 0; j < fsSchedules.length(); j++) {
+            JSONObject scheduleFs = fsSchedules.getJSONObject(j);
+            String shiftDb = scheduleFs.getString(SHIFT);
+            String employeeCodeDb = scheduleFs.getString(EMPLOYEE_CODE);
+            String shiftDateDb = scheduleFs.getString(SHIFT_DATE);
+            if (!(shiftFs.equals(shiftDb) || (employeeCodeFs.equals(employeeCodeDb) || shiftDateFs.equals(shiftDateDb)))){
+                ShiftScheduleDaoDb.pushSchedule(scheduleDb);
+                break;
+            }
+        }
+    }
+
 }

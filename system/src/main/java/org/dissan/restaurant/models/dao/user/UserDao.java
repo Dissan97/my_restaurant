@@ -86,4 +86,7 @@ public class UserDao {
         return local;
     }
 
+    public void switchDao() {
+        this.setLocal(!isLocal());
+    }
 }

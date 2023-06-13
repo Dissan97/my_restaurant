@@ -14,29 +14,29 @@ public class BeanUtil {
 
     private BeanUtil(){}
 
-    public static void handleCommon(String entry) throws BadCommanEntryException {
+    public static void handleCommon(String entry) throws BadCommandEntryException {
         if (entry == null){
-            throw new BadCommanEntryException("Entry cannot be null");
+            throw new BadCommandEntryException("Entry cannot be null");
         }
 
         if (entry.isEmpty()){
-            throw new BadCommanEntryException("Entry cannot be empty");
+            throw new BadCommandEntryException("Entry cannot be empty");
         }
     }
 
 
-    public static void handleUserName(String entry) throws BadCommanEntryException {
+    public static void handleUserName(String entry) throws BadCommandEntryException {
         handleUserName(entry, "username");
     }
 
-    public static void handleUserName(String entry, String field) throws BadCommanEntryException {
+    public static void handleUserName(String entry, String field) throws BadCommandEntryException {
         BeanUtil.handleCommon(entry);
         if (entry.length() < 6){
-            throw new BadCommanEntryException("field " + field + " must contains at least 6 letters");
+            throw new BadCommandEntryException("field " + field + " must contains at least 6 letters");
         }
     }
 
-    public static void handlePassword(String entry) throws BadCommanEntryException {
+    public static void handlePassword(String entry) throws BadCommandEntryException {
         BeanUtil.handleUserName(entry, "password");
         final String pattern = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@#$%^&+=!.?_]).*$";
 
@@ -44,7 +44,7 @@ public class BeanUtil {
         Matcher matcher = regex.matcher(entry);
 
         if (!matcher.matches()) {
-            throw new BadCommanEntryException(
+            throw new BadCommandEntryException(
                     """
                     field Password must contains upper letter and has num and special character example:
                     This.isG00d - thisIsNot

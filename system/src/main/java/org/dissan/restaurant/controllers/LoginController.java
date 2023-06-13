@@ -1,12 +1,14 @@
 package org.dissan.restaurant.controllers;
 
-import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.BadCommandEntryException;
 import org.dissan.restaurant.beans.EmployeeBean;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.beans.UserBeanCommand;
 import org.dissan.restaurant.controllers.exceptions.UserAlreadyExistException;
 import org.dissan.restaurant.controllers.exceptions.UserCredentialException;
 import org.dissan.restaurant.controllers.exceptions.UserNotFoundException;
+import org.dissan.restaurant.controllers.util.DBMS;
+import org.dissan.restaurant.controllers.util.DBMSException;
 import org.dissan.restaurant.controllers.util.HashUtil;
 import org.dissan.restaurant.models.AbstractUser;
 import org.dissan.restaurant.models.ConcreteUser;
@@ -16,6 +18,7 @@ import org.dissan.restaurant.models.dao.user.UserDao;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class LoginController {
     private UserBean userBean;
@@ -26,11 +29,16 @@ public class LoginController {
         this.userBean = new UserBean();
         this.setDao(new UserDao());
     }
-    public void singIn() throws UserCredentialException, BadCommanEntryException {
+    public void singIn() throws UserCredentialException, BadCommandEntryException {
         String username = this.userBean.getEntry(UserBeanCommand.USERNAME);
         String password = this.userBean.getEntry(UserBeanCommand.PASSWORD);
         checkUserAndPassword(username, password);
         this.userBean.setUser(this.user);
+        try {
+            DBMS.setActualRole(this.userBean.getRole().name());
+        } catch (DBMSException e) {
+            Logger.getLogger(this.getClass().getSimpleName()).warning(e.getMessage());
+        }
     }
 
     private void checkUser(String username) throws UserNotFoundException {
@@ -49,8 +57,13 @@ public class LoginController {
             throw new UserCredentialException("Password miss match");
         }
     }
-
-    public void singUp() throws BadCommanEntryException, UserAlreadyExistException, IOException {
+    /**
+     * In this method the normal flow wants that the user exists it can throw user exist
+     * if the user does not exist then it will create a new user and then store it
+     * @throws BadCommandEntryException this is thrown if the entry checked is invalid
+     * @throws UserAlreadyExistException this is thrown when the user exists
+     */
+    public void singUp() throws BadCommandEntryException, UserAlreadyExistException, IOException {
         String username = this.userBean.getEntry(UserBeanCommand.USERNAME);
         String password = HashUtil.hashString(this.userBean.getEntry(UserBeanCommand.PASSWORD));
         String name = this.userBean.getEntry(UserBeanCommand.NAME);
@@ -96,5 +109,9 @@ public class LoginController {
 
     public void setUserBean(UserBean ub) {
         this.userBean = ub;
+    }
+
+    public void switchDao(){
+        this.dao.switchDao();
     }
 }

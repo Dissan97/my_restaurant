@@ -1,6 +1,6 @@
 package org.dissan.restaurant.cli.patterns.behavioral.state;
 
-import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.BadCommandEntryException;
 import org.dissan.restaurant.beans.UserBeanCommand;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.cli.patterns.behavioral.state.exceptions.CliUiException;
@@ -34,7 +34,7 @@ public class LoginCliState extends CliState{
             }
             try {
                 handleCmd(cmd);
-            } catch (UserAlreadyExistException | BadCommanEntryException | IOException | UserCredentialException e) {
+            } catch (UserAlreadyExistException | BadCommandEntryException | IOException | UserCredentialException e) {
                 outline(e.getMessage());
                 updateUi();
             } catch (CliUiException e) {
@@ -50,33 +50,32 @@ public class LoginCliState extends CliState{
 
     }
 
-    private void handleCmd(@NotNull String cmd) throws UserAlreadyExistException, BadCommanEntryException, CliUiException, IOException, UserCredentialException {
+    private void handleCmd(@NotNull String cmd) throws UserAlreadyExistException, BadCommandEntryException, CliUiException, IOException, UserCredentialException {
         switch (cmd) {
-            case "sign_in", "1":
+            case "sign_in", "1" -> {
                 signIn(0);
                 CliState state = StateFactory.getInstance(CliStateEnum.valueOf(this.bean.getRole().name()), bean, this);
                 this.changeState(state);
-                break;
-            case "sign_up", "2":
+            }
+            case "sign_up", "2" -> {
                 signUp(0);
                 updateUi();
-                break;
-            case EXIT, "3":
-                break;
-            case "help", "4":
-                showHelp();
-                break;
-            case BACK, "5":
-                getBack();
-                break;
-            default:
+            }
+            case HELP, "3" -> showHelp();
+            case SWITCH_DAO, "4" -> {
+                this.controller.switchDao();
+                outline("DAO SWITCHED");
+                updateUi();
+            }
+            case BACK, "6" -> getBack();
+            default -> {
                 super.logger.warning("Something wrong");
                 updateUi();
-                break;
+            }
         }
     }
 
-    private void signUp(int op) throws CliUiException, UserAlreadyExistException, BadCommanEntryException, IOException {
+    private void signUp(int op) throws CliUiException, UserAlreadyExistException, BadCommandEntryException, IOException {
         try {
             while (op < 7) {
                 switch (op) {
@@ -114,7 +113,7 @@ public class LoginCliState extends CliState{
                 }
             }
 
-        }catch (BadCommanEntryException e) {
+        }catch (BadCommandEntryException e) {
             super.outline(e.getMessage());
             String cmd = super.getUserInput(LoginCliState.CONTINUE);
             if (cmd.equalsIgnoreCase("y") || cmd.equalsIgnoreCase("yes")) {
@@ -128,7 +127,7 @@ public class LoginCliState extends CliState{
         this.controller.singUp();
     }
 
-    private void signIn(int op) throws UserCredentialException, CliUiException, BadCommanEntryException {
+    private void signIn(int op) throws UserCredentialException, CliUiException, BadCommandEntryException {
 
         try {
             while (op < 2) {
@@ -144,7 +143,7 @@ public class LoginCliState extends CliState{
                     default -> op = 3;
                 }
             }
-        }catch (BadCommanEntryException e) {
+        }catch (BadCommandEntryException e) {
             super.outline(e.getMessage());
             String cmd = super.getUserInput(LoginCliState.CONTINUE);
             if (cmd.equalsIgnoreCase("y") || cmd.equalsIgnoreCase("yes")) {
@@ -157,7 +156,7 @@ public class LoginCliState extends CliState{
         this.controller.singIn();
     }
 
-    private void insertOp(UserBeanCommand command, String cmd) throws BadCommanEntryException {
+    private void insertOp(UserBeanCommand command, String cmd) throws BadCommandEntryException {
         String msg = super.getUserInput(cmd);
         this.bean.insertCommand(command, msg);
     }

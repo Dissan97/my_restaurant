@@ -88,23 +88,23 @@ public class ShiftScheduleBean implements ShiftScheduleBeanApi {
     }
 
     @Override
-    public void insertCommand(@NotNull ShiftBeanCommand command, String entry) throws BadCommanEntryException {
+    public void insertCommand(@NotNull ShiftBeanCommand command, String entry) throws BadCommandEntryException {
         switch (command) {
             case EMPLOYEE_CODE, SHIFT_CODE -> BeanUtil.handleCommon(entry);
             case DATE_TIME -> {
                 if (BeanUtil.goodDate(entry, true) == null) {
-                    throw new BadCommanEntryException(entry + "is not good date");
+                    throw new BadCommandEntryException(entry + "is not good date");
                 }
             }
             case UPDATE_DATE_TIME -> {
                 if (BeanUtil.goodDate(entry, true) == null) {
-                    throw new BadCommanEntryException(entry + "is not good date");
+                    throw new BadCommandEntryException(entry + "is not good date");
                 }
                 if (entry.equals(this.shiftSchedule.getShiftDate())){
-                    throw new BadCommanEntryException(entry + "Cannot pass the same date");
+                    throw new BadCommandEntryException(entry + "Cannot pass the same date");
                 }
             }
-            default -> throw new BadCommanEntryException(command.name() + " entry unavailable");
+            default -> throw new BadCommandEntryException(command.name() + " entry unavailable");
         }
         this.viewEntries.remove(command);
         this.viewEntries.put(command, entry);

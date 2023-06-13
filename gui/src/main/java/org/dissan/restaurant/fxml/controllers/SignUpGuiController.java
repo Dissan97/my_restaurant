@@ -2,7 +2,7 @@ package org.dissan.restaurant.fxml.controllers;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.BadCommandEntryException;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.beans.UserBeanCommand;
 import org.dissan.restaurant.controllers.LoginController;
@@ -63,7 +63,7 @@ public class SignUpGuiController {
                         rl.isEmpty()
             );
             if (controlNotEmpty){
-                throw new BadCommanEntryException("Fields cannot be empty");
+                throw new BadCommandEntryException("Fields cannot be empty");
             }
             this.userBean.insertCommand(UserBeanCommand.USERNAME, usr);
             this.userBean.insertCommand(UserBeanCommand.PASSWORD, pwd);
@@ -73,7 +73,7 @@ public class SignUpGuiController {
             this.userBean.insertCommand(UserBeanCommand.DATE, date);
             this.userBean.insertCommand(UserBeanCommand.ROLE, rl);
             this.controller.singIn();
-        } catch (BadCommanEntryException | UserCredentialException e) {
+        } catch (BadCommandEntryException | UserCredentialException e) {
             GuiController.popUpError(e);
         }
 

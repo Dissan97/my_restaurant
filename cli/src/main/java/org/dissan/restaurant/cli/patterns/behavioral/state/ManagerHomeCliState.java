@@ -1,6 +1,6 @@
 package org.dissan.restaurant.cli.patterns.behavioral.state;
 
-import org.dissan.restaurant.beans.BadCommanEntryException;
+import org.dissan.restaurant.beans.BadCommandEntryException;
 import org.dissan.restaurant.beans.ShiftBeanCommand;
 import org.dissan.restaurant.beans.UserBean;
 import org.dissan.restaurant.beans.api.ShiftScheduleBeanApi;
@@ -45,10 +45,13 @@ public class ManagerHomeCliState extends AccountHomeCliState{
                 updateUi();
             }
             case "manage_requests", "5" -> mangeRequests();
-            case "help", "6" -> showHelp();
-            case "exit", "7" -> exitProgram();
-            case "account", "8" -> showAccountInfo();
-            case "switch_persistence", "9" -> switchPersistence();
+            case HELP , "6" -> showHelp();
+            case SWITCH_DAO, "7" -> {
+                this.shiftManager.switchPersistence();
+                updateUi();
+            }
+            case EXIT , "8" -> exitProgram();
+            case "account", "9" -> showAccountInfo();
             default -> {
                 logger.warning("Something wrong");
                 updateUi();
@@ -146,7 +149,7 @@ public class ManagerHomeCliState extends AccountHomeCliState{
 
         try {
             this.scheduleBean.insertCommand(command, entry);
-        } catch (BadCommanEntryException e) {
+        } catch (BadCommandEntryException e) {
             outline(e.getMessage());
             entry = getUserInput("continue ? y - n");
             if (entry.equalsIgnoreCase("y") || entry.equalsIgnoreCase("yes")){

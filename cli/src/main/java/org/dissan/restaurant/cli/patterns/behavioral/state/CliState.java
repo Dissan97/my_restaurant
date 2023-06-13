@@ -18,6 +18,7 @@ public abstract class CliState {
     protected static final String BACK = "back";
     protected static final String HELP = "help";
     protected static final String EXIT = "exit";
+    protected static final String SWITCH_DAO = "switch_dao";
     protected JSONObject allowedCommands;
     protected String pageName;
     protected CliState previousState;
@@ -48,6 +49,7 @@ public abstract class CliState {
             this.logger.warning("load conf function: error ->" + e.getMessage() + " path issue: " + path);
         }
         addCmd(HELP);
+        addCmd(SWITCH_DAO);
         addCmd(EXIT);
         if (! (this instanceof HomeCliState)) {
             addCmd(BACK);
