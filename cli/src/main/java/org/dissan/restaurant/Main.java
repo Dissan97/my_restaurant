@@ -7,7 +7,7 @@ import org.dissan.restaurant.cli.patterns.behavioral.state.exceptions.CliUiExcep
 import org.dissan.restaurant.cli.patterns.behavioral.creational.factory.StateFactory;
 public class Main {
 
-
+    private Main(){}
 
     public static void main(String...args) throws CliUiException {
         CliState home = StateFactory.getInstance(CliStateEnum.HOME, null);
