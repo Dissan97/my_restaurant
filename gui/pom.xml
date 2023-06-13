@@ -3,16 +3,13 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.dissan.restaurant</groupId>
+        <artifactId>MyRestaurant</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-    <groupId>org.dissan.restaurant</groupId>
-    <artifactId>MyRestaurant</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <packaging>pom</packaging>
-    <modules>
-        <module>system</module>
-        <module>cli</module>
-        <module>gui</module>
-    </modules>
+    <artifactId>gui</artifactId>
 
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
@@ -22,31 +19,25 @@
 
 
     <dependencies>
-
+        <!--javaFX-->
         <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>23.0.0</version>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-controls</artifactId>
+            <version>19.0.2.1</version>
         </dependency>
-
-
-        <!-- JUNIT -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>2.0.7</version>
-            <scope>test</scope>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-fxml</artifactId>
+            <version>19.0.2.1</version>
         </dependency>
-
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.13.2</version>
-            <scope>test</scope>
+            <groupId>org.dissan.restaurant</groupId>
+            <artifactId>system</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
-
-
     </dependencies>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -59,14 +50,7 @@
                         <target>19</target>
                     </configuration>
                 </plugin>
-
-                <plugin>
-                    <groupId>org.apache.maven.surefire</groupId>
-                    <artifactId>common-java5</artifactId>
-                    <version>3.0.0</version>
-                </plugin>
             </plugins>
         </pluginManagement>
     </build>
-
 </project>
