@@ -22,31 +22,16 @@ CREATE TABLE `my_restaurant`.`Users` (
 CREATE TABLE `my_restaurant`.`Employees` (
   `employee` VARCHAR(45) NOT NULL,
   `user` VARCHAR(64) NOT NULL,
-  PRIMARY KEY (`employee`, `user`),
-  INDEX `fk_Employee_1_idx` (`user` ASC) VISIBLE,
-  CONSTRAINT `fk_Employee_1`
-    FOREIGN KEY (`user`)
-    REFERENCES `my_restaurant`.`Users` (`username`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  PRIMARY KEY (`employee`, `user`)
+  );
     
     CREATE TABLE `my_restaurant`.`ShiftSchedules` (
   `employee` VARCHAR(45) NOT NULL,
   `shift` VARCHAR(45) NOT NULL,
   `shiftDate` VARCHAR(45) NOT NULL,
   `updateRequest` TINYINT NOT NULL,
-  PRIMARY KEY (`employee`, `shift`, `shiftDate`),
-  INDEX `fk_ShiftSchedules_2_idx` (`shift` ASC) VISIBLE,
-  CONSTRAINT `fk_ShiftSchedules_1`
-    FOREIGN KEY (`employee`)
-    REFERENCES `my_restaurant`.`Employees` (`employee`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `fk_ShiftSchedules_2`
-    FOREIGN KEY (`shift`)
-    REFERENCES `my_restaurant`.`Shifts` (`code`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION);
+  `shiftUpdateDate` VARCHAR(45),
+  PRIMARY KEY (`employee`, `shift`, `shiftDate`));
 
 USE `my_restaurant`;
 -- STORED PROCEDURES 
@@ -61,6 +46,7 @@ BEGIN
 	declare exit handler for sqlexception
 		begin 
 			rollback;
+            resignal;
 		end;
 	set transaction isolation level read committed;
     start transaction;
@@ -79,6 +65,7 @@ BEGIN
 	declare exit handler for sqlexception
 	begin
 		rollback;
+        resignal;
 	end;
 	set transaction isolation level read uncommitted;
 	start transaction;
@@ -89,11 +76,13 @@ DELIMITER ;
 -- ----------------------------- --
 -- PULL USER_BY_USERNAME
 -- ----------------------------- --
+DELIMITER $$
 CREATE PROCEDURE `pullUserByUsername` (in usr varchar(64))
 BEGIN
 		declare exit handler for sqlexception
 		begin 
 			rollback;
+            resignal;
 		end;
 	set transaction isolation level read committed;
     start transaction;
@@ -113,6 +102,7 @@ BEGIN
 	declare exit handler for sqlexception
 		begin 
 			rollback;
+            resignal;
 		end;
 	set transaction isolation level read committed;
     start transaction;
@@ -122,19 +112,23 @@ END$$
 
 DELIMITER ;
 
+-- ------------------------------------
+-- PUSH SHIFT SCHEDULE 
+-- ------------------------------------
 DELIMITER $$
 
-CREATE PROCEDURE `pushShiftSchedule` (in emp varchar(64), in sft varchar(64), in shift_date varchar (45), in up boolean)
+CREATE PROCEDURE `pushShiftSchedule` (in sft varchar(64), in emp varchar(64), in shift_date varchar (45))
 BEGIN
 	declare exit handler for sqlexception
 	begin 
 		rollback;
+        resignal;
 	end;
 	set transaction isolation level read uncommitted;
 	start transaction;
         INSERT INTO `my_restaurant`.`ShiftSchedules`
 		(`employee`,`shift`,`shiftDate`,`updateRequest`)
-		VALUES(emp, sft, shift_date, up);
+		VALUES(emp, sft, shift_date, false);
 	commit;
 END$$
 DELIMITER ;
@@ -146,13 +140,71 @@ BEGIN
 	declare exit handler for sqlexception
 	begin 
 		rollback;
+        resignal;
 	end;
 	set transaction isolation level read committed;
 	start transaction;
         select * from `my_restaurant`.`ShiftSchedules`
 	commit;
 END$$
+-- --------------------------------------------------
+-- PULL SHCHEDULE 
+-- -------------------------------------------------- 
+DELIMITER $$
+USE `my_restaurant`$$
+CREATE PROCEDURE `pullSchedule` (in sCode varchar (45), in eCode varchar(45), in dt varchar(64))
+BEGIN
+	declare exit handler for sqlexception
+		begin 
+			rollback;
+            resignal;
+		end;
+	set transaction isolation level read committed;
+    SELECT * FROM `my_restaurant`.`ShiftSchedules`
+    WHERE employee = eCode and shift = sCode and shiftDate = dt;
+    commit;
+END$$
 
+DELIMITER ;
+-- -------------------------------------------
+-- UPDATE SCHEDULE 
+-- -------------------------------------------
+DELIMITER $$
+USE `my_restaurant`$$
+CREATE PROCEDURE `updateSchedule` (in sft varchar(45), in emp varchar(45), in dt varchar(45), in up boolean, in update_date varchar(45))
+BEGIN
+
+	declare var_update_date varchar (64);
+	declare exit handler for sqlexception
+	begin 
+		rollback;
+        resignal;
+	end;
+    
+    if (update_date = "") then 
+    set var_update_date = null;
+    else set var_update_date = update_date;
+    end if;
+	set transaction isolation level repeatable read;
+	start transaction;
+    if up = false then
+		UPDATE `my_restaurant`.`ShiftSchedules`
+		SET `updateRequest` = up,
+		`shiftUpdateDate` = update_date
+		WHERE `employee` = emp AND `shift` = sft AND `shiftDate` = dt;
+	else
+        UPDATE `my_restaurant`.`ShiftSchedules`
+		SET `updateRequest` = up,
+		`shiftUpdateDate` = null,
+        `shiftDate` = update_date
+		WHERE `employee` = emp AND `shift` = sft AND `shiftDate` = dt;
+    end if;
+    
+    commit;
+
+END$$
+
+DELIMITER ;
 
 
 -- USERS --
@@ -191,4 +243,20 @@ grant execute on procedure `my_restaurant`.`pushUser` to 'LOGIN'@'localhost';
 grant execute on procedure `my_restaurant`.`pullShifts` to 'MANAGER'@'localhost';
 grant execute on procedure `my_restaurant`.`pullShifts` to 'ATTENDANT'@'localhost';
 grant execute on procedure `my_restaurant`.`pullShifts` to 'COOKER'@'localhost';
+
+grant execute on procedure `my_restaurant`.`pullSchedules` to 'MANAGER'@'localhost';
+grant execute on procedure `my_restaurant`.`pullSchedules` to 'ATTENDANT'@'localhost';
+grant execute on procedure `my_restaurant`.`pullSchedules` to 'COOKER'@'localhost';
+
+grant execute on procedure `my_restaurant`.`pullSchedule` to 'MANAGER'@'localhost';
+grant execute on procedure `my_restaurant`.`pullSchedule` to 'ATTENDANT'@'localhost';
+grant execute on procedure `my_restaurant`.`pullSchedule` to 'COOKER'@'localhost';
+
+grant execute on procedure `my_restaurant`.`updateSchedule` to 'MANAGER'@'localhost';
+grant execute on procedure `my_restaurant`.`updateSchedule` to 'ATTENDANT'@'localhost';
+grant execute on procedure `my_restaurant`.`updateSchedule` to 'COOKER'@'localhost';
+
+
+
+grant execute on procedure `my_restaurant`.`pushShiftSchedule` to 'MANAGER'@'localhost';
 

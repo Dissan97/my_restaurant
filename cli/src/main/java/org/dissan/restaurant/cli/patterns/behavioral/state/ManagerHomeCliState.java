@@ -47,7 +47,13 @@ public class ManagerHomeCliState extends AccountHomeCliState{
             case "manage_requests", "5" -> mangeRequests();
             case HELP , "6" -> showHelp();
             case SWITCH_DAO, "7" -> {
-                this.shiftManager.switchPersistence();
+                boolean isLocal = this.shiftManager.switchPersistence();
+                String message = "Switch to database";
+
+                if (isLocal){
+                    message = "Switch to fileSystem";
+                }
+                outline(message);
                 updateUi();
             }
             case EXIT , "8" -> exitProgram();

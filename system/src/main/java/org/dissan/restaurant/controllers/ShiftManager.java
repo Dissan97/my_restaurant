@@ -82,9 +82,8 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
         Employee emp = controlEmployee(eCode);
         Shift sft = controlShift(sCode);
         ShiftSchedule shiftSchedule = new ShiftSchedule(sft, emp, dateTime);
-        ShiftScheduleDao dao = new ShiftScheduleDao();
         try {
-            ShiftSchedule vShiftSchedule = dao.getShiftByKey(sCode, eCode, dateTime);
+            ShiftSchedule vShiftSchedule = this.shiftScheduleDao.getShiftByKey(sCode, eCode, dateTime);
             String key = shiftSchedule.toString();
             String keyToVerify = vShiftSchedule.toString();
             if (key.equals(keyToVerify)){
@@ -93,7 +92,7 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
         }catch (NullPointerException ignored){
             //This block is ignored
         }
-        dao.pushShiftSchedule(shiftSchedule);
+        this.shiftScheduleDao.pushShiftSchedule(shiftSchedule);
     }
 
 
@@ -182,8 +181,9 @@ public class ShiftManager implements ShiftManagerEmployeeApi {
     }
 
     @Override
-    public void switchPersistence() {
+    public boolean switchPersistence() {
         this.shiftScheduleDao.switchPersistence();
+        return shiftScheduleDao.isLocal();
     }
 
 }

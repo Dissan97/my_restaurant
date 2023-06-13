@@ -16,5 +16,5 @@ public interface ShiftManagerEmployeeApi {
     void getMySchedule();
     ShiftScheduleBean getBean();
 
-    void switchPersistence();
+    boolean switchPersistence();
 }
